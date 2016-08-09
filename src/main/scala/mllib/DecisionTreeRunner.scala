@@ -20,20 +20,19 @@ package mllib
 
 import java.util.Random
 
-import scala.language.reflectiveCalls
-
-import scopt.OptionParser
-
-import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.evaluation.MulticlassMetrics
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
-import org.apache.spark.mllib.tree.{DecisionTree, RandomForest, impurity}
-import org.apache.spark.mllib.tree.configuration.{Algo, Strategy}
 import org.apache.spark.mllib.tree.configuration.Algo._
+import org.apache.spark.mllib.tree.configuration.{Algo, Strategy}
+import org.apache.spark.mllib.tree.{DecisionTree, RandomForest, impurity}
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.util.Utils
+import org.apache.spark.{SparkConf, SparkContext}
+import scopt.OptionParser
+
+import scala.language.reflectiveCalls
 
 /**
  * An example runner for decision trees and random forests. Run with
@@ -182,7 +181,7 @@ object DecisionTreeRunner {
     }
     // For classification, re-index classes if needed.
     val (examples, classIndexMap, numClasses) = algo match {
-      case Classification => {
+      case Classification =>
         // classCounts: class --> # examples in class
         val classCounts = origExamples.map(_.label).countByValue()
         val sortedClasses = classCounts.keys.toList.sorted
@@ -211,7 +210,6 @@ object DecisionTreeRunner {
           println(s"$c\t$frac\t${classCounts(c)}")
         }
         (examples, classIndexMap, numClasses)
-      }
       case Regression =>
         (origExamples, null, 0)
       case _ =>
@@ -227,7 +225,7 @@ object DecisionTreeRunner {
         case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
       }
       algo match {
-        case Classification => {
+        case Classification =>
           // classCounts: class --> # examples in class
           val testExamples = {
             if (classIndexMap.isEmpty) {
@@ -237,7 +235,6 @@ object DecisionTreeRunner {
             }
           }
           Array(examples, testExamples)
-        }
         case Regression =>
           Array(examples, origTestExamples)
       }
@@ -259,7 +256,7 @@ object DecisionTreeRunner {
 
   def run(params: Params) {
 
-    val conf = new SparkConf().setAppName(s"DecisionTreeRunner with $params").setMaster("local")
+    val conf = new SparkConf().setAppName(s"DecisionTreeRunner with $params")
     val sc = new SparkContext(conf)
 
     println(s"DecisionTreeRunner with parameters:\n$params")
@@ -299,11 +296,10 @@ object DecisionTreeRunner {
       }
       if (params.algo == Classification) {
         val trainAccuracy =
-          new MulticlassMetrics(training.map(lp => (model.predict(lp.features), lp.label)))
-            .precision
+          new MulticlassMetrics(training.map(lp => (model.predict(lp.features), lp.label))).accuracy
         println(s"Train accuracy = $trainAccuracy")
         val testAccuracy =
-          new MulticlassMetrics(test.map(lp => (model.predict(lp.features), lp.label))).precision
+          new MulticlassMetrics(test.map(lp => (model.predict(lp.features), lp.label))).accuracy
         println(s"Test accuracy = $testAccuracy")
       }
       if (params.algo == Regression) {
@@ -326,11 +322,10 @@ object DecisionTreeRunner {
           println(model) // Print model summary.
         }
         val trainAccuracy =
-          new MulticlassMetrics(training.map(lp => (model.predict(lp.features), lp.label)))
-            .precision
+          new MulticlassMetrics(training.map(lp => (model.predict(lp.features), lp.label))).accuracy
         println(s"Train accuracy = $trainAccuracy")
         val testAccuracy =
-          new MulticlassMetrics(test.map(lp => (model.predict(lp.features), lp.label))).precision
+          new MulticlassMetrics(test.map(lp => (model.predict(lp.features), lp.label))).accuracy
         println(s"Test accuracy = $testAccuracy")
       }
       if (params.algo == Regression) {

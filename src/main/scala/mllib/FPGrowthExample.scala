@@ -18,10 +18,9 @@
 // scalastyle:off println
 package mllib
 
-import scopt.OptionParser
-
 import org.apache.spark.mllib.fpm.FPGrowth
 import org.apache.spark.{SparkConf, SparkContext}
+import scopt.OptionParser
 
 /**
  * Example for mining frequent itemsets using FP-growth.

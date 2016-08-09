@@ -18,13 +18,11 @@
 // scalastyle:off println
 package mllib
 
-import scopt.OptionParser
-
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.MultivariateOnlineSummarizer
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.{SparkConf, SparkContext}
-
+import scopt.OptionParser
 
 /**
  * An example app for summarizing multivariate data from a file. Run with

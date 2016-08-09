@@ -18,12 +18,10 @@
 // scalastyle:off println
 package mllib
 
-import scopt.OptionParser
-
-import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.linalg.distributed.{MatrixEntry, RowMatrix}
 import org.apache.spark.{SparkConf, SparkContext}
+import scopt.OptionParser
 
 /**
  * Compute the similar columns of a matrix, using cosine similarity.

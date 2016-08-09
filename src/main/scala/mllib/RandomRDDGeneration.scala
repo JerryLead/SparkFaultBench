@@ -20,7 +20,6 @@ package mllib
 
 import org.apache.spark.mllib.random.RandomRDDs
 import org.apache.spark.rdd.RDD
-
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**

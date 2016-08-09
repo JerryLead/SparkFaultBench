@@ -18,9 +18,9 @@
 // scalastyle:off println
 package mllib
 
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.mllib.linalg.distributed.RowMatrix
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.linalg.distributed.RowMatrix
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
  * Compute the singular value decomposition (SVD) of a tall-and-skinny matrix.

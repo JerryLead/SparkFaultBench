@@ -17,11 +17,11 @@
 
 package streaming
 
-import scala.collection.mutable.SynchronizedQueue
-
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.{Seconds, StreamingContext}
+
+import scala.collection.mutable.Queue
 
 object QueueStream {
 
@@ -34,7 +34,7 @@ object QueueStream {
 
     // Create the queue through which RDDs can be pushed to
     // a QueueInputDStream
-    val rddQueue = new SynchronizedQueue[RDD[Int]]()
+    val rddQueue = new Queue[RDD[Int]]()
 
     // Create the QueueInputDStream and use it do some processing
     val inputStream = ssc.queueStream(rddQueue)
@@ -43,9 +43,11 @@ object QueueStream {
     reducedStream.print()
     ssc.start()
 
-    // Create and push some RDDs into
+    // Create and push some RDDs into rddQueue
     for (i <- 1 to 30) {
-      rddQueue += ssc.sparkContext.makeRDD(1 to 1000, 10)
+      rddQueue.synchronized {
+        rddQueue += ssc.sparkContext.makeRDD(1 to 1000, 10)
+      }
       Thread.sleep(1000)
     }
     ssc.stop()

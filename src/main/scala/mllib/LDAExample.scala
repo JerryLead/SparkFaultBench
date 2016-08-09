@@ -18,16 +18,15 @@
 // scalastyle:off println
 package mllib
 
-import scopt.OptionParser
-
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel, RegexTokenizer, StopWordsRemover}
 import org.apache.spark.mllib.clustering.{DistributedLDAModel, EMLDAOptimizer, LDA, OnlineLDAOptimizer}
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{Row, SQLContext}
+import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
+import scopt.OptionParser
 
 /**
  * An example Latent Dirichlet Allocation (LDA) app. Run with
@@ -107,18 +106,23 @@ object LDAExample {
   }
 
   private def run(params: Params) {
-    val conf = new SparkConf().setAppName(s"LDAExample with $params")
-    val sc = new SparkContext(conf)
+    // val conf = new SparkConf().setAppName(s"LDAExample with $params")
+    // val sc = new SparkContext(conf)
+
+    val spark = SparkSession
+      .builder
+      .appName(s"LDAExample with $params")
+      .getOrCreate()
 
     Logger.getRootLogger.setLevel(Level.WARN)
 
     // Load documents, and prepare them for LDA.
     val preprocessStart = System.nanoTime()
     val (corpus, vocabArray, actualNumTokens) =
-      preprocess(sc, params.input, params.vocabSize, params.stopwordFile)
+      preprocess(spark, params.input, params.vocabSize, params.stopwordFile)
     corpus.cache()
     val actualCorpusSize = corpus.count()
-    val actualVocabSize = vocabArray.size
+    val actualVocabSize = vocabArray.length
     val preprocessElapsed = (System.nanoTime() - preprocessStart) / 1e9
 
     println()
@@ -147,7 +151,7 @@ object LDAExample {
       .setTopicConcentration(params.topicConcentration)
       .setCheckpointInterval(params.checkpointInterval)
     if (params.checkpointDir.nonEmpty) {
-      sc.setCheckpointDir(params.checkpointDir.get)
+      spark.sparkContext.setCheckpointDir(params.checkpointDir.get)
     }
     val startTime = System.nanoTime()
     val ldaModel = lda.run(corpus)
@@ -176,7 +180,7 @@ object LDAExample {
       }
       println()
     }
-    sc.stop()
+    spark.sparkContext.stop()
   }
 
   /**
@@ -184,23 +188,28 @@ object LDAExample {
    * @return (corpus, vocabulary as array, total token count in corpus)
    */
   private def preprocess(
-      sc: SparkContext,
+      spark: SparkSession,
       paths: Seq[String],
       vocabSize: Int,
       stopwordFile: String): (RDD[(Long, Vector)], Array[String], Long) = {
 
-    val sqlContext = SQLContext.getOrCreate(sc)
-    import sqlContext.implicits._
+    /*
+    val spark = SparkSession
+      .builder
+      .sparkContext(sc)
+      .getOrCreate()
+    */
+    import spark.implicits._
 
     // Get dataset of document texts
     // One document per line in each text file. If the input consists of many small files,
     // this can result in a large number of small partitions, which can degrade performance.
     // In this case, consider using coalesce() to create fewer, larger partitions.
-    val df = sc.textFile(paths.mkString(",")).toDF("docs")
+    val df = spark.sparkContext.textFile(paths.mkString(",")).toDF("docs")
     val customizedStopWords: Array[String] = if (stopwordFile.isEmpty) {
       Array.empty[String]
     } else {
-      val stopWordText = sc.textFile(stopwordFile).collect()
+      val stopWordText = spark.sparkContext.textFile(stopwordFile).collect()
       stopWordText.flatMap(_.stripMargin.split("\\s+"))
     }
     val tokenizer = new RegexTokenizer()
@@ -221,6 +230,7 @@ object LDAExample {
     val model = pipeline.fit(df)
     val documents = model.transform(df)
       .select("features")
+      .rdd
       .map { case Row(features: Vector) => features }
       .zipWithIndex()
       .map(_.swap)

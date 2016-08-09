@@ -18,6 +18,7 @@
 package ml.util
 
 import org.apache.spark.ml.attribute._
+import org.apache.spark.ml.linalg.VectorUDT
 import org.apache.spark.mllib.linalg.VectorUDT
 import org.apache.spark.sql.types.StructField
 
@@ -25,14 +26,14 @@ import scala.collection.immutable.HashMap
 
 
 /**
- * Helper utilities for algorithms using ML metadata
- */
+  * Helper utilities for algorithms using ML metadata
+  */
 object MetadataUtils {
 
   /**
-   * Examine a schema to identify the number of classes in a label column.
-   * Returns None if the number of labels is not specified, or if the label column is continuous.
-   */
+    * Examine a schema to identify the number of classes in a label column.
+    * Returns None if the number of labels is not specified, or if the label column is continuous.
+    */
   def getNumClasses(labelSchema: StructField): Option[Int] = {
     Attribute.fromStructField(labelSchema) match {
       case binAttr: BinaryAttribute => Some(2)
@@ -42,15 +43,15 @@ object MetadataUtils {
   }
 
   /**
-   * Examine a schema to identify categorical (Binary and Nominal) features.
-   *
-   * @param featuresSchema  Schema of the features column.
-   *                        If a feature does not have metadata, it is assumed to be continuous.
-   *                        If a feature is Nominal, then it must have the number of values
-   *                        specified.
-   * @return  Map: feature index --> number of categories.
-   *          The map's set of keys will be the set of categorical feature indices.
-   */
+    * Examine a schema to identify categorical (Binary and Nominal) features.
+    *
+    * @param featuresSchema  Schema of the features column.
+    *                        If a feature does not have metadata, it is assumed to be continuous.
+    *                        If a feature is Nominal, then it must have the number of values
+    *                        specified.
+    * @return  Map: feature index --> number of categories.
+    *          The map's set of keys will be the set of categorical feature indices.
+    */
   def getCategoricalFeatures(featuresSchema: StructField): Map[Int, Int] = {
     val metadata = AttributeGroup.fromStructField(featuresSchema)
     if (metadata.attributes.isEmpty) {
@@ -76,11 +77,11 @@ object MetadataUtils {
   }
 
   /**
-   * Takes a Vector column and a list of feature names, and returns the corresponding list of
-   * feature indices in the column, in order.
-   * @param col  Vector column which must have feature names specified via attributes
-   * @param names  List of feature names
-   */
+    * Takes a Vector column and a list of feature names, and returns the corresponding list of
+    * feature indices in the column, in order.
+    * @param col  Vector column which must have feature names specified via attributes
+    * @param names  List of feature names
+    */
   def getFeatureIndicesFromNames(col: StructField, names: Array[String]): Array[Int] = {
     require(col.dataType.isInstanceOf[VectorUDT], s"getFeatureIndicesFromNames expected column $col"
       + s" to be Vector type, but it was type ${col.dataType} instead.")

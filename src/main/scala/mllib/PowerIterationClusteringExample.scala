@@ -19,11 +19,13 @@
 package mllib
 
 import org.apache.log4j.{Level, Logger}
+import org.apache.spark.{SparkConf, SparkContext}
 import scopt.OptionParser
 
+// $example on$
 import org.apache.spark.mllib.clustering.PowerIterationClustering
+// $example off$
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
 
 /**
  * An example Power Iteration Clustering http://www.icml2010.org/papers/387.pdf app.
@@ -90,6 +92,7 @@ object PowerIterationClusteringExample {
 
     Logger.getRootLogger.setLevel(Level.WARN)
 
+    // $example on$
     val circlesRdd = generateCirclesRdd(sc, params.k, params.numPoints)
     val model = new PowerIterationClustering()
       .setK(params.k)
@@ -101,12 +104,13 @@ object PowerIterationClusteringExample {
     val assignments = clusters.toList.sortBy { case (k, v) => v.length }
     val assignmentsStr = assignments
       .map { case (k, v) =>
-      s"$k -> ${v.sorted.mkString("[", ",", "]")}"
-    }.mkString(", ")
+        s"$k -> ${v.sorted.mkString("[", ",", "]")}"
+      }.mkString(", ")
     val sizesStr = assignments.map {
       _._2.length
     }.sorted.mkString("(", ",", ")")
     println(s"Cluster assignments: $assignmentsStr\ncluster sizes: $sizesStr")
+    // $example off$
 
     sc.stop()
   }

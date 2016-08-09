@@ -60,10 +60,10 @@ object StreamingTestExample {
     val conf = new SparkConf().setMaster("local").setAppName("StreamingTestExample")
     val ssc = new StreamingContext(conf, batchDuration)
     /*
-    ssc.checkpoint({
+    ssc.checkpoint {
       val dir = Utils.createTempDir()
       dir.toString
-    })
+    }
     */
 
     // $example on$

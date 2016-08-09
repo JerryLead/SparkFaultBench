@@ -18,17 +18,19 @@
 // scalastyle:off println
 package graphx
 
-import scala.collection.mutable
 import org.apache.spark._
-import org.apache.spark.storage.StorageLevel
+import org.apache.spark.graphx.PartitionStrategy._
 import org.apache.spark.graphx._
 import org.apache.spark.graphx.lib._
-import org.apache.spark.graphx.PartitionStrategy._
+import org.apache.spark.internal.Logging
+import org.apache.spark.storage.StorageLevel
+
+import scala.collection.mutable
 
 /**
  * Driver program for running graph algorithms.
  */
-object Analytics extends Logging {
+object Analytics {
 
   def main(args: Array[String]): Unit = {
     if (args.length < 2) {
@@ -98,7 +100,7 @@ object Analytics extends Logging {
         println("GRAPHX: Total rank: " + pr.map(_._2).reduce(_ + _))
 
         if (!outFname.isEmpty) {
-          logWarning("Saving pageranks of pages to " + outFname)
+          println("Saving pageranks of pages to " + outFname)
           pr.map { case (id, r) => id + "\t" + r }.saveAsTextFile(outFname)
         }
 

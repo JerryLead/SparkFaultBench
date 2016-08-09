@@ -19,12 +19,11 @@
 package mllib
 
 import org.apache.log4j.{Level, Logger}
-import scopt.OptionParser
-
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.mllib.optimization.{L1Updater, SimpleUpdater, SquaredL2Updater}
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
 import org.apache.spark.mllib.util.MLUtils
-import org.apache.spark.mllib.optimization.{SimpleUpdater, SquaredL2Updater, L1Updater}
+import org.apache.spark.{SparkConf, SparkContext}
+import scopt.OptionParser
 
 /**
  * An example app for linear regression. Run with
@@ -34,6 +33,7 @@ import org.apache.spark.mllib.optimization.{SimpleUpdater, SquaredL2Updater, L1U
  * A synthetic dataset can be found at `data/mllib/sample_linear_regression_data.txt`.
  * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
  */
+@deprecated("Use ml.regression.LinearRegression or LBFGS", "2.0.0")
 object LinearRegression {
 
   object RegType extends Enumeration {
@@ -89,14 +89,14 @@ object LinearRegression {
   }
 
   def run(params: Params) {
-    val conf = new SparkConf().setAppName(s"LinearRegression with $params").setMaster("local[2]")
+    val conf = new SparkConf().setAppName(s"LinearRegression with $params")
     val sc = new SparkContext(conf)
 
     Logger.getRootLogger.setLevel(Level.WARN)
 
     val examples = MLUtils.loadLibSVMFile(sc, params.input).cache()
 
-    val splits = examples.randomSplit(Array(0.8, 0.2), 1234)
+    val splits = examples.randomSplit(Array(0.8, 0.2))
     val training = splits(0).cache()
     val test = splits(1).cache()
 

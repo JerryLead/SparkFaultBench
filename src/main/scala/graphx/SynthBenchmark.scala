@@ -18,11 +18,11 @@
 // scalastyle:off println
 package graphx
 
-import org.apache.spark.SparkContext._
-import org.apache.spark.graphx.{GraphXUtils, PartitionStrategy}
-import org.apache.spark.{SparkContext, SparkConf}
+import java.io.{FileOutputStream, PrintWriter}
+
 import org.apache.spark.graphx.util.GraphGenerators
-import java.io.{PrintWriter, FileOutputStream}
+import org.apache.spark.graphx.{GraphXUtils, PartitionStrategy}
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
  * The SynthBenchmark application can be used to run various GraphX algorithms on

@@ -18,11 +18,10 @@
 // scalastyle:off println
 package mllib
 
+import org.apache.spark.{SparkConf, SparkContext}
 // $example on$
 import org.apache.spark.mllib.fpm.PrefixSpan
 // $example off$
-
-import org.apache.spark.{SparkConf, SparkContext}
 
 object PrefixSpanExample {
 

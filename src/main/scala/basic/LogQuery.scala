@@ -21,10 +21,10 @@ package basic
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
- * Executes a roll up-style query against Apache logs.
- *
- * Usage: LogQuery [logFile]
- */
+  * Executes a roll up-style query against Apache logs.
+  *
+  * Usage: LogQuery [logFile]
+  */
 object LogQuery {
   val exampleApacheLogs = List(
     """10.10.10.10 - "FRED" [18/Jan/2013:17:56:07 +1100] "GET http://images.com/2013/Generic.jpg
@@ -78,7 +78,7 @@ object LogQuery {
     dataSet.map(line => (extractKey(line), extractStats(line)))
       .reduceByKey((a, b) => a.merge(b))
       .collect().foreach{
-        case (user, query) => println("%s\t%s".format(user, query))}
+      case (user, query) => println("%s\t%s".format(user, query))}
 
     sc.stop()
   }
