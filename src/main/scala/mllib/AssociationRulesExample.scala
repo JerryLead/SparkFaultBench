@@ -28,6 +28,7 @@ object AssociationRulesExample {
 
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("AssociationRulesExample")
+    conf.setMaster("local")
     val sc = new SparkContext(conf)
 
     // $example on$

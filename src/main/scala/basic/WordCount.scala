@@ -13,7 +13,8 @@ object WordCount {
     val sc = new SparkContext(conf)
 
 
-    val filePath = "src/main/scala/basic/WordCount.scala"
+    var filePath = "src/main/scala/basic/WordCount.scala"
+    filePath="d://data//123.txt"
     val textFile = sc.textFile(filePath)
     val result = textFile.flatMap(_.split("[ |\\.]"))
       .map(word => (word, 1)).reduceByKey(_ + _)
