@@ -16,9 +16,8 @@
  */
 
 // scalastyle:off println
-package mllib
+package mllib.wjf
 
-import breeze.linalg.DenseVector
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.util.Random

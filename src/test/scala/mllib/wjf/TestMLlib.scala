@@ -1,10 +1,9 @@
-package mllib.ml_wjf
+package mllib.wjf
 
 //import com.sun.xml.internal.ws.util.ByteArrayBuffer
 //import org.apache.hadoop.hive.ql.exec.vector.VectorAssignRowSameBatch
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.ml.linalg.{Vector, Vectors}
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.ml.linalg.{Vector,Vectors}
 //import org.apache.spark.SparkContext
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.param.ParamMap
