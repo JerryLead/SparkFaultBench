@@ -16,7 +16,7 @@
  */
 
 // scalastyle:off println
-package test.mllib.wjf
+package mllib.wjf
 
 import org.apache.spark.{SparkConf, SparkContext}
 // $example on$

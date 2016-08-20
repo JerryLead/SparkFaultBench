@@ -1,4 +1,4 @@
-package test.mllib.wjf;
+package mllib;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;

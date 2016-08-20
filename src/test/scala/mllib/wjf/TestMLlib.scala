@@ -1,4 +1,4 @@
-package test.mllib.wjf
+package mllib.wjf
 
 //import com.sun.xml.internal.ws.util.ByteArrayBuffer
 //import org.apache.hadoop.hive.ql.exec.vector.VectorAssignRowSameBatch
