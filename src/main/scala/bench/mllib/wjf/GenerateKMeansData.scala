@@ -1,8 +1,8 @@
-package mllib.wjf
+package bench.mllib.wjf
 
 import java.io.{File, PrintWriter}
 
-import mllib.HdfsHelp
+
 
 import scala.util.Random
 

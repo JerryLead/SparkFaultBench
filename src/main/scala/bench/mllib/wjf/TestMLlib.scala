@@ -1,13 +1,9 @@
-package mllib.wjf
+package bench.mllib.wjf
 
-//import com.sun.xml.internal.ws.util.ByteArrayBuffer
-//import org.apache.hadoop.hive.ql.exec.vector.VectorAssignRowSameBatch
-import org.apache.spark.ml.linalg.{Vector, Vectors}
-import org.apache.spark.sql.SparkSession
-//import org.apache.spark.SparkContext
 import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.linalg.{Vector, Vectors}
 import org.apache.spark.ml.param.ParamMap
-import org.apache.spark.sql.Row
+import org.apache.spark.sql.{Row, SparkSession}
 
 /**
   * Created by wjf on 2016/8/11.
@@ -64,4 +60,3 @@ object TestMLlib {
 
 
 }
-
