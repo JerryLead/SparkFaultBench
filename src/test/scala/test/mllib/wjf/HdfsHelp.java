@@ -14,7 +14,7 @@ import java.io.IOException;
 public class HdfsHelp {
 
     public static void main(String[] args) throws IOException {
-        uploadFile2HDFS("dataGenerated/mllib/wjf/Kmeans_random.txt","hdfs://133.133.134.108:9000/user/hadoop/data/wjf");
+//        uploadFile2HDFS("dataGenerated/mllib/wjf/Kmeans_random.txt","hdfs://133.133.134.108:9000/user/hadoop/data/wjf");
     }
 
     public static void uploadFile2HDFS(String src,String dest) throws IOException {

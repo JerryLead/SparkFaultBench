@@ -12,7 +12,7 @@ object GenerateKMeansData {
   def main(args: Array[String]): Unit = {
 //    val path ="dataGenerated/mllib/wjf/Kmeans_random_small.txt"
 //    randomData(path)
-    HdfsHelp.uploadFile2HDFS("dataGenerated/mllib/wjf/Kmeans_random_small.txt", "hdfs://133.133.134.108:9000/user/hadoop/data/wjf")
+//    HdfsHelp.uploadFile2HDFS("dataGenerated/mllib/wjf/Kmeans_random_small.txt", "hdfs://133.133.134.108:9000/user/hadoop/data/wjf")
 
   }
   def randomData(path:String): Unit ={

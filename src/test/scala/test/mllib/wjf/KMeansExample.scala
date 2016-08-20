@@ -36,7 +36,7 @@ object KMeansExample {
     val sc = new SparkContext(conf)
 
 
-    val data = sc.textFile("hdfs://133.133.134.108:9000/user/hadoop/data/wjf/Kmeans_random_small.txt")
+    val data = sc.textFile("hdfs://133.133.134.108:9000/user/hadoop/data/wjf/Kmeans_random.txt")
     val parsedData = data.map(s => Vectors.dense(s.split(' ').map(_.toDouble))).cache()
 
     // Cluster the data into two classes using KMeans
@@ -51,8 +51,8 @@ object KMeansExample {
     println("Within Set Sum of Squared Errors = " + WSSSE)
 
     // Save and load model
-      clusters.save(sc, "hdfs://133.133.134.108:9000/user/hadoop/data/wjf/KMeansExample/KMeansModel")
-    val sameModel = KMeansModel.load(sc, "hdfs://133.133.134.108:9000/user/hadoop/data/wjf/KMeansExample/KMeansModel")
+      clusters.save(sc, "hdfs://133.133.134.108:9000/user/hadoop/data/wjf/KMeansExample/KMeansModelBig")
+    val sameModel = KMeansModel.load(sc, "hdfs://133.133.134.108:9000/user/hadoop/data/wjf/KMeansExample/KMeansModelBig")
     // $example off$
     sameModel.clusterCenters.foreach(println)
     sc.stop()
