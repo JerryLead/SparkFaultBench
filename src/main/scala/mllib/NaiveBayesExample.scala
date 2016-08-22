@@ -33,6 +33,7 @@ object NaiveBayesExample {
     // Load and parse the data file.
     val data = MLUtils.loadLibSVMFile(sc, "data/mllib/sample_libsvm_data.txt")
 
+
     // Split data into training (60%) and test (40%).
     val Array(training, test) = data.randomSplit(Array(0.6, 0.4))
 
@@ -40,7 +41,6 @@ object NaiveBayesExample {
 
     val predictionAndLabel = test.map(p => (model.predict(p.features), p.label))
     val accuracy = 1.0 * predictionAndLabel.filter(x => x._1 == x._2).count() / test.count()
-
     // Save and load model
     model.save(sc, "target/tmp/myNaiveBayesModel")
     val sameModel = NaiveBayesModel.load(sc, "target/tmp/myNaiveBayesModel")
