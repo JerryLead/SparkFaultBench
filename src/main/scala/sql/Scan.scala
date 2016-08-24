@@ -12,11 +12,7 @@ object Scan {
   def main(args: Array[String]): Unit = {
 
     val warehouseLocation = System.getProperty("user.dir")
-    val spark = SparkSession.builder()
-      .appName("Scan")
-      .config("spark.some.config.option", "some-value")
-      .config("spark.sql.warehouse.dir",warehouseLocation)
-      .master("local[2]").getOrCreate()
+    val spark = getSparkSession("Scan")
     doScanSQL(spark)
   }
   private def doScanSQL(spark:SparkSession):Unit={

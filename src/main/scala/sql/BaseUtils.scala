@@ -17,6 +17,17 @@ object BaseUtils {
                         sKeyword:String,
                         avgTimeOnSite:Long
                        )
+
+  def getSparkSession(appName:String):SparkSession={
+    val warehouseLocation = System.getProperty("user.dir")
+    val spark = SparkSession.builder()
+      .appName(appName)
+      .config("spark.sql.warehouse.dir",warehouseLocation)
+      .master("local[2]")
+      .getOrCreate()
+    return spark
+  }
+
   def getRankingsDF(spark:SparkSession):DataFrame={
     import spark.implicits._
     val rankingsDF = spark.sparkContext

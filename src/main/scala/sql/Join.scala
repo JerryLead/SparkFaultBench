@@ -11,11 +11,7 @@ object Join {
 
   def main(args: Array[String]): Unit = {
     val warehouseLocation = System.getProperty("user.dir")
-    val spark = SparkSession.builder()
-      .appName("Join")
-      .config("spark.sql.warehouse.dir",warehouseLocation)
-      .master("local[2]")
-      .getOrCreate()
+    val spark = getSparkSession("Join")
 
     doJoinSQL(spark)
   }
@@ -27,8 +23,8 @@ object Join {
 
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")
-    val sqltext = ""
-    val joinDF = spark.sql("select sourceipaddr,url,adrevenue from rankings INNER JOIN uservisits ON url=destinationURL")
+    val sqltext = "select sourceipaddr,url,adrevenue from rankings INNER JOIN uservisits ON url=destinationURL"
+    val joinDF = spark.sql(sqltext)
     joinDF.show()
     //print(joinDF.count())
 
