@@ -1,0 +1,1 @@
+python formatLibSVM.py testForm.csv 6,84,86,95,96,97,98,107,108,109,183 testForm.txt
