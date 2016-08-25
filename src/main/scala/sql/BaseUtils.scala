@@ -23,25 +23,25 @@ object BaseUtils {
     val spark = SparkSession.builder()
       .appName(appName)
       .config("spark.sql.warehouse.dir",warehouseLocation)
-      .master("local[2]")
+      .master("local[5]")
       .getOrCreate()
     return spark
   }
 
-  def getRankingsDF(spark:SparkSession):DataFrame={
+  def getRankingsDF(spark:SparkSession,loadfile:String):DataFrame={
     import spark.implicits._
     val rankingsDF = spark.sparkContext
-      .textFile("dataGenerated/sql/lcr/sqldata/rankings.txt")
+      .textFile("dataGenerated/sql/lcr/sqldata/"+loadfile)
       .map(_.split(","))
       .map(attributes=>Rankings(attributes(0).trim.toInt,attributes(1),attributes(2).trim.toInt))
       .toDF()
     return rankingsDF
   }
 
-  def getUservisitsDF(spark:SparkSession):DataFrame={
+  def getUservisitsDF(spark:SparkSession,loadfile:String):DataFrame={
     import spark.implicits._
     val uservisitsDF =spark.sparkContext
-      .textFile("dataGenerated/sql/lcr/sqldata/uservisits.txt")
+      .textFile("dataGenerated/sql/lcr/sqldata/"+loadfile)
       .map(_.split(","))
       .map(attributes=>UserVisits(attributes(0),
         attributes(1),

@@ -17,13 +17,13 @@ object Scan {
   }
   private def doScanSQL(spark:SparkSession):Unit={
     import spark.implicits._
-    val rankingsDF = getRankingsDF(spark)
+    val rankingsDF = getRankingsDF(spark,"rankings.txt")
 
     rankingsDF.createOrReplaceTempView("rankings")
     val scanDF = spark.sql("SELECT * From rankings where pagerank > 20")
     scanDF.show()
 
-    val uservisitsDF =getUservisitsDF(spark)
+    val uservisitsDF =getUservisitsDF(spark,"uservisits.txt")
 
     uservisitsDF.createOrReplaceTempView("uservisits")
     val scanDF2 = spark.sql("SELECT * from uservisits")

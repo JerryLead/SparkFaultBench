@@ -2,6 +2,9 @@ import mod_config
 from randomUtils import RandomUtils
 import random, time, math
 
+#
+GenType = "NORMAL"
+
 #words
 maxurllen = 100
 minurllen = 10
@@ -11,6 +14,8 @@ extractUrl = 30
 #file
 filemean = 10000
 filevar = 1000
+f1 = "rankings.txt"
+f2 = "uservisits.txt"
 
 #table
 rankings_col = 10
@@ -144,8 +149,20 @@ def load_zipf():
             residual = 0
         min_bucket = max_bucket
 
-def genRankingsFile():
-    f = open('rankings.txt','w')
+
+def getDestinationUrl():
+    if GenType == 'NORMAL':
+        return urls[RandomUtils.randomInt(0,len(urls)-1)]
+    else:
+        ra = RandomUtils.randomBase()
+        if ra < 0.8:
+            return urls[0]
+        else:
+            return urls[RandomUtils.randomInt(0,len(urls)-1)]
+
+
+def genRankingsFile(outputfile):
+    f = open(outputfile,'w')
     for key in urldict.keys():
         pagerank = urldict[key]
         pageurl = key
@@ -155,17 +172,17 @@ def genRankingsFile():
     f.close()
 
 
-def genUservisitsFile():
-    output = open('uservisits.txt','w')
+def genUservisitsFile(outputfile):
+    output = open(outputfile,'w')
     agents = loadfile('user_agents.dat')
     codes = loadfile('country_codes_plus_languages.dat')
     keywords = loadfile('keywords.dat')
 
     for i in range(userVisits_col):
         sourceIP = genIP()
-        destURL = urls[RandomUtils.randomInt(0,len(urls)-1)]
+        destURL = getDestinationUrl()
         visitDate = RandomUtils.randomDate()
-        adRevenue = RandomUtils.randomBase()*1000.0
+        adRevenue = RandomUtils.randomFloat(1000.0)
         userAgent = agents[RandomUtils.randomInt(0,len(agents)-1)].strip().replace(',', ' ')
         mycode = codes[RandomUtils.randomInt(0,len(codes)-1)].strip().split(',')
         countryCode = mycode[0]
@@ -177,20 +194,27 @@ def genUservisitsFile():
         output.write(content)
     output.close()
 
-def run():
 
+def genOutputName():
+    print "generate urls successfully"
+    global f1,f2
+    if (GenType == 'NORMAL'):
+        f1 = "rankings.txt"
+        f2 = "uservisits.txt"
+    else:
+        f1 = "rankings_skewed.txt"
+        f2 = "uservisits_skewed.txt"
+
+def run():
     getConfigPar()
     print "get config paramters successfully"
     load_zipf()
     print "load_zipf successfully"
     genUrls()
-    print "generate urls successfully"
-    genRankingsFile()
+    genOutputName()
+    genRankingsFile(f1)
     print "generate rankings table successfully"
-    genUservisitsFile()
+    genUservisitsFile(f2)
     print "generate uservisits table successfully"
 
-def test():
-    for i in range(1,10):
-        RandomUtils.randomInt(1,10)
 run()

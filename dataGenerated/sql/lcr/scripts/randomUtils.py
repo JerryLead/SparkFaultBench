@@ -24,6 +24,9 @@ class RandomUtils:
     def randomBase(cls):
         return random.random()
 
+    @classmethod
+    def randomFloat(cls,x):
+        return random.random() * x
 
     #from knuth -- return a sample from a (0,1) normal distributon
     @classmethod

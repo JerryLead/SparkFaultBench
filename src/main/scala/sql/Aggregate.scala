@@ -16,11 +16,11 @@ object Aggregate {
   def doAggregateSQL(spark:SparkSession): Unit={
     import spark.implicits._
 //    val rankingsDF = getRankingsDF(spark)
-    val uservisitsDF = getUservisitsDF(spark)
+    val uservisitsDF = getUservisitsDF(spark,"uservisits_skewed.txt")
 
 //    rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")
-    val sqltext = "select substr(sourceipaddr,1,3),sum(adRevenue) from uservisits group by substr(sourceipaddr,1,3)"
+    val sqltext = "select destinationURL,sum(adRevenue) as total from uservisits group by destinationURL order by total desc"
     val aggreDF = spark.sql(sqltext)
     aggreDF.show()
 
