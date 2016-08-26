@@ -18,8 +18,8 @@ object Join {
 
   def doJoinSQL(spark:SparkSession) : Unit={
     import spark.implicits._
-    val rankingsDF = getRankingsDF(spark,"rankings_skewed.txt")
-    val uservisitsDF = getUservisitsDF(spark,"uservisits_skewed.txt")
+    val rankingsDF = getRankingsDF(spark,"rankings.txt")
+    val uservisitsDF = getUservisitsDF(spark,"uservisits.txt")
 
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")

@@ -26,7 +26,7 @@ object Scan {
     val uservisitsDF =getUservisitsDF(spark,"uservisits.txt")
 
     uservisitsDF.createOrReplaceTempView("uservisits")
-    val scanDF2 = spark.sql("SELECT * from uservisits")
+    val scanDF2 = spark.sql("SELECT * from uservisits where adRevenue > 200.0")
     scanDF2.show()
   }
 

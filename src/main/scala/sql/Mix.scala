@@ -12,8 +12,8 @@ object Mix {
     doMixSQL(spark)
   }
   def doMixSQL(spark: SparkSession) :Unit={
-    val rankingsDF = getRankingsDF(spark,"rankings.txt")
-    val uservisitsDF = getUservisitsDF(spark,"uservisits.txt")
+    val rankingsDF = getRankingsDF(spark,"rankings_skewed.txt")
+    val uservisitsDF = getUservisitsDF(spark,"uservisits_skewed.txt")
 
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")

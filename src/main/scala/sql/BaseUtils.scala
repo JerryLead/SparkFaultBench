@@ -23,7 +23,7 @@ object BaseUtils {
     val spark = SparkSession.builder()
       .appName(appName)
       .config("spark.sql.warehouse.dir",warehouseLocation)
-      .master("local[5]")
+      //.master("local[5]")
       .getOrCreate()
     return spark
   }
@@ -31,7 +31,7 @@ object BaseUtils {
   def getRankingsDF(spark:SparkSession,loadfile:String):DataFrame={
     import spark.implicits._
     val rankingsDF = spark.sparkContext
-      .textFile("dataGenerated/sql/lcr/sqldata/"+loadfile)
+      .textFile("hdfs:///user/hadoop/data/lcr/"+loadfile)
       .map(_.split(","))
       .map(attributes=>Rankings(attributes(0).trim.toInt,attributes(1),attributes(2).trim.toInt))
       .toDF()
@@ -41,7 +41,7 @@ object BaseUtils {
   def getUservisitsDF(spark:SparkSession,loadfile:String):DataFrame={
     import spark.implicits._
     val uservisitsDF =spark.sparkContext
-      .textFile("dataGenerated/sql/lcr/sqldata/"+loadfile)
+      .textFile("hdfs:///user/hadoop/data/lcr/"+loadfile)
       .map(_.split(","))
       .map(attributes=>UserVisits(attributes(0),
         attributes(1),
