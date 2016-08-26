@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #/bin/bash
 
 SPARK_HOME=~/spark-1.6.2-bin-hadoop2.7.1-dynamic
