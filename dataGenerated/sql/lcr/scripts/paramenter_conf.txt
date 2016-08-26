@@ -1,0 +1,7 @@
+
+[base]
+
+UserVisits_col=1550000
+
+
+Rankings_col=10000

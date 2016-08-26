@@ -1,0 +1,1 @@
+SELECT * From rankings where pagerank > 20
