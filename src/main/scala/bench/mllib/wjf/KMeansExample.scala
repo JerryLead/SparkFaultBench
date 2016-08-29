@@ -19,12 +19,13 @@ object KMeansExample {
     val sc = new SparkContext(conf)
 
 
-    val data = sc.textFile("hdfs://133.133.134.108:9000/user/hadoop/data/wjf/Kmeans_random.txt")
+    val data = sc.textFile("hdfs://133.133.134.108:9000/user/hadoop/data/wjf/Kmeans_random_small.txt")
     val parsedData = data.map(s => Vectors.dense(s.split(' ').map(_.toDouble))).cache()
 
     // Cluster the data into two classes using KMeans
     val numClusters = 2
     val numIterations = 20
+
 
 
     val clusters = KMeans.train(parsedData, numClusters, numIterations,10)

@@ -17,9 +17,9 @@ object RandomDataGenerator {
 //    HdfsHelp.uploadFile2HDFS("dataGenerated/mllib/wjf/Kmeans_random_small.txt", "hdfs://133.133.134.108:9000/user/hadoop/data/wjf")
 
     // naiveBayesRandomData
-    val path= "dataGenerated/mllib/wjf/NaiveBayes_random_big.txt"
+    val path= "dataGenerated/mllib/wjf/NaiveBayes_random_small.txt"
     naiveBayesRandomData(path)
-    HdfsHelp.uploadFile2HDFS("dataGenerated/mllib/wjf/NaiveBayes_random_big.txt", "hdfs://133.133.134.108:9000/user/hadoop/data/wjf")
+    HdfsHelp.uploadFile2HDFS("dataGenerated/mllib/wjf/NaiveBayes_random_small.txt", "hdfs://133.133.134.108:9000/user/hadoop/data/wjf")
 
   }
   def kmeansRandomData(path:String): Unit ={
@@ -39,7 +39,7 @@ object RandomDataGenerator {
   }
   def naiveBayesRandomData(path:String):Unit ={
     // data format is LabledPoints
-
+    // big 1000000  500  small 1000 50
     val num_of_points=1000000
     val num_of_dim=500
 
@@ -47,11 +47,9 @@ object RandomDataGenerator {
     var temp =1;
     val writer =new PrintWriter(new File(path))
     for(i <- 0 until num_of_points){
-      writer.write(random.nextInt(2).toString+" ")
-      temp =0
+      writer.write(random.nextInt(10).toString+",")
       for(j <- 0 until num_of_dim){
-        temp =temp + 1 + random.nextInt(5)
-        writer.write( temp.toString +":"+ random.nextInt(100).toString + " ")
+        writer.write(random.nextInt(10).toString + " ")
       }
       writer.write("\n")
     }
