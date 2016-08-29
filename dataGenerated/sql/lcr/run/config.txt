@@ -1,0 +1,5 @@
+HDFS_PATH = hdfs:///user/hadoop/data/lcr/
+RANKINGS_FILE = rankings.txt
+RANKINGS_SKEWED_FILE = rankings_skewed.txt
+USERVISITS_FILE = uservisits.txt
+USERVISITS_SKEWED_FILE = uservisits_skewed.txt
