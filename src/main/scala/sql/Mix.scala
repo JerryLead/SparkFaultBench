@@ -8,12 +8,15 @@ import sql.BaseUtils._
   */
 object Mix {
   def main(args: Array[String]): Unit = {
+    val dfs_path = args(0)
+    val file1 = args(1)
+    val file2 = args(2)
     val spark = getSparkSession("Mix")
-    doMixSQL(spark)
+    doMixSQL(spark,dfs_path,file1,file2)
   }
-  def doMixSQL(spark: SparkSession) :Unit={
-    val rankingsDF = getRankingsDF(spark,"rankings_skewed.txt")
-    val uservisitsDF = getUservisitsDF(spark,"uservisits_skewed.txt")
+  def doMixSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String) :Unit={
+    val rankingsDF = getRankingsDF(spark,file1,dfs_path)
+    val uservisitsDF = getUservisitsDF(spark,file2,dfs_path)
 
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")

@@ -6,6 +6,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
   * Created by lenovo on 2016/8/24 0024.
   */
 object BaseUtils {
+  val HDFS_PATH = "hdfs:///user/hadoop/data/lcr/"
   case class Rankings(pagerank: Long, url: String, adprofit:Long)
   case class UserVisits(sourceIPAddr:String,
                         destinationURL: String,
@@ -28,20 +29,20 @@ object BaseUtils {
     return spark
   }
 
-  def getRankingsDF(spark:SparkSession,loadfile:String):DataFrame={
+  def getRankingsDF(spark:SparkSession,loadfile:String, path:String):DataFrame={
     import spark.implicits._
     val rankingsDF = spark.sparkContext
-      .textFile("hdfs:///user/hadoop/data/lcr/"+loadfile)
+      .textFile(HDFS_PATH + loadfile)
       .map(_.split(","))
       .map(attributes=>Rankings(attributes(0).trim.toInt,attributes(1),attributes(2).trim.toInt))
       .toDF()
     return rankingsDF
   }
 
-  def getUservisitsDF(spark:SparkSession,loadfile:String):DataFrame={
+  def getUservisitsDF(spark:SparkSession,loadfile:String, path:String):DataFrame={
     import spark.implicits._
     val uservisitsDF =spark.sparkContext
-      .textFile("hdfs:///user/hadoop/data/lcr/"+loadfile)
+      .textFile(HDFS_PATH + loadfile)
       .map(_.split(","))
       .map(attributes=>UserVisits(attributes(0),
         attributes(1),

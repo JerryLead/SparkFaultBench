@@ -8,15 +8,17 @@ import sql.BaseUtils._
   */
 object Aggregate {
   def main(args: Array[String]): Unit = {
-    val warehouseLocation = System.getProperty("user.dir")
+    val dfs_path = args(0)
+    val file1 = args(1)
+    val file2 = args(2)
     val spark = getSparkSession("Aggregate")
-    doAggregateSQL(spark)
+    doAggregateSQL(spark,dfs_path,file1,file2)
   }
 
-  def doAggregateSQL(spark:SparkSession): Unit={
+  def doAggregateSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String): Unit={
     import spark.implicits._
 //    val rankingsDF = getRankingsDF(spark)
-    val uservisitsDF = getUservisitsDF(spark,"uservisits_skewed.txt")
+    val uservisitsDF = getUservisitsDF(spark,file2,dfs_path)
 
 //    rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")
