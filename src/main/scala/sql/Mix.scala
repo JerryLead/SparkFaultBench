@@ -22,14 +22,14 @@ object Mix {
     uservisitsDF.createOrReplaceTempView("uservisits")
 
     val sqltext =
-      "SELECT sourceIPAddr, totalRevenue, avgPageRank " +
-      "FROM (SELECT sourceIPAddr," +
+      "SELECT destinationURL,totalRevenue, avgPageRank " +
+      "FROM (SELECT destinationURL," +
                       "AVG(pageRank) as avgPageRank," +
                       "SUM(adRevenue) as totalRevenue " +
               "FROM Rankings AS R, Uservisits AS UV " +
               "WHERE R.url = UV.destinationURL " +
-                  "AND UV.avgTimeOnSite BETWEEN 30 AND 70 " +
-              "GROUP BY UV.sourceIPAddr) " +
+                  "AND UV.avgTimeOnSite BETWEEN 8 AND 95 " +
+              "GROUP BY UV.destinationURL) " +
               "ORDER BY totalRevenue DESC LIMIT 10"
     val mixDF = spark.sql(sqltext)
     mixDF.show()

@@ -1,6 +1,6 @@
 import mod_config
 from randomUtils import RandomUtils
-import random, time, math
+import math
 
 #
 GenType = "NORMAL"
@@ -72,12 +72,12 @@ def genUrls():
         strurl = urlhead + urlname + urlend
         urls.append(strurl)
         if (i % 10000 == 0):
-            print "generated %d urls" % i
+            print ("generated %d urls" % i)
     for i in range(rankings_col):
         #genPageContent()
         genSimplePageContent()
         if (i % 1000 == 0):
-            print "generated %d exctr url" % i
+            print ("generated %d exctr url" % i)
 
 
 def getUrl():
@@ -155,7 +155,7 @@ def getDestinationUrl():
         return urls[RandomUtils.randomInt(0,len(urls)-1)]
     else:
         ra = RandomUtils.randomBase()
-        if ra < 0.8:
+        if ra < 0.9:
             return urls[0]
         else:
             return urls[RandomUtils.randomInt(0,len(urls)-1)]
@@ -177,8 +177,9 @@ def genUservisitsFile(outputfile):
     agents = loadfile('user_agents.dat')
     codes = loadfile('country_codes_plus_languages.dat')
     keywords = loadfile('keywords.dat')
-
     for i in range(userVisits_col):
+        if (i % 100000 == 0):
+            print (i)
         sourceIP = genIP()
         destURL = getDestinationUrl()
         visitDate = RandomUtils.randomDate()
@@ -196,7 +197,7 @@ def genUservisitsFile(outputfile):
 
 
 def genOutputName():
-    print "generate urls successfully"
+    print ("generate urls successfully")
     global f1,f2
     if (GenType == 'NORMAL'):
         f1 = "rankings.txt"
@@ -205,16 +206,25 @@ def genOutputName():
         f1 = "rankings_skewed.txt"
         f2 = "uservisits_skewed.txt"
 
+
 def run():
     getConfigPar()
-    print "get config paramters successfully"
+    print ("get config paramters successfully")
     load_zipf()
-    print "load_zipf successfully"
+    print ("load_zipf successfully")
     genUrls()
+    # generate NORMAL data
     genOutputName()
     genRankingsFile(f1)
-    print "generate rankings table successfully"
+    print ("generate rankings table successfully")
     genUservisitsFile(f2)
-    print "generate uservisits table successfully"
+
+    # generate SKEWED data
+    global GenType
+    GenType= "SKEWED"
+    genOutputName()
+    genRankingsFile(f1)
+    genUservisitsFile(f2)
+    print ("generate uservisits table successfully")
 
 run()

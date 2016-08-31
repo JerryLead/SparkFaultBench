@@ -24,7 +24,7 @@ object Join {
 
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")
-    val sqltext = "select sourceipaddr,url,adrevenue " +
+    val sqltext = "select pagerank,sourceipaddr,url,adrevenue " +
       "from rankings " +
       "INNER JOIN uservisits " +
       "ON url=destinationURL " +
