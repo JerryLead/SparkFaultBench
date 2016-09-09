@@ -1,8 +1,7 @@
-package sql
+package sql.standard
 
 import org.apache.spark.sql.SparkSession
-import sql.BaseUtils._
-
+import BaseUtils._
 /**
   * Created by lenovo on 2016/8/24 0024.
   */
@@ -16,7 +15,6 @@ object Aggregate {
   }
 
   def doAggregateSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String): Unit={
-    import spark.implicits._
 //    val rankingsDF = getRankingsDF(spark)
     val uservisitsDF = getUservisitsDF(spark,file2,dfs_path)
 
@@ -25,7 +23,9 @@ object Aggregate {
     val sqltext = "select destinationURL,sum(adRevenue) as total from uservisits group by destinationURL order by total desc"
     val aggreDF = spark.sql(sqltext)
     aggreDF.show()
-
+    val sqltext2 = "select count(distinct destinationURL) AS url_count from uservisits"
+    val aggreDF2 = spark.sql(sqltext2)
+    aggreDF2.show()
   }
 }
 

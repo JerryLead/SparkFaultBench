@@ -1,7 +1,7 @@
-package sql
+package sql.standard
 
+import BaseUtils._
 import org.apache.spark.sql.SparkSession
-import sql.BaseUtils._
 /**
   * Created by lenovo on 2016/8/23 0023.
   */
@@ -18,7 +18,6 @@ object Scan {
     doScanSQL(spark,dfs_path,file1,file2)
   }
   private def doScanSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String):Unit={
-    import spark.implicits._
     val rankingsDF = getRankingsDF(spark,file1,dfs_path)
 
     rankingsDF.createOrReplaceTempView("rankings")

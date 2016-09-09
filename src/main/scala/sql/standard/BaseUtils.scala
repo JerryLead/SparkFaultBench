@@ -1,4 +1,4 @@
-package sql
+package sql.standard
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -37,7 +37,7 @@ object BaseUtils {
       .map(attributes=>Rankings(attributes(0).trim.toInt,attributes(1),attributes(2).trim.toInt))
       .toDF()
     return rankingsDF
-  }
+    }
 
   def getUservisitsDF(spark:SparkSession,loadfile:String, path:String):DataFrame={
     import spark.implicits._

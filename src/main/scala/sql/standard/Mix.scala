@@ -1,8 +1,7 @@
-package sql
+package sql.standard
 
 import org.apache.spark.sql.SparkSession
-import sql.BaseUtils._
-
+import BaseUtils._
 /**
   * Created by lenovo on 2016/8/24 0024.
   */

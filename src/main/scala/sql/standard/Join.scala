@@ -1,8 +1,7 @@
-package sql
+package sql.standard
 
 import org.apache.spark.sql.SparkSession
-import sql.BaseUtils._
-
+import BaseUtils._
 /**
   * Created by lenovo on 2016/8/24 0024.
   */
@@ -18,15 +17,14 @@ object Join {
   }
 
   def doJoinSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String) : Unit={
-    import spark.implicits._
     val rankingsDF = getRankingsDF(spark,file1,dfs_path)
     val uservisitsDF = getUservisitsDF(spark,file2,dfs_path)
 
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")
     val sqltext = "select pagerank,sourceipaddr,url,adrevenue " +
-      "from rankings " +
-      "INNER JOIN uservisits " +
+      "from uservisits " +
+      "INNER JOIN rankings " +
       "ON url=destinationURL " +
       "order by adrevenue desc limit 100"
     val joinDF = spark.sql(sqltext)
