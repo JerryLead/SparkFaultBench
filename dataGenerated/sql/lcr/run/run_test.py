@@ -1,6 +1,6 @@
 import os
 
-classdicts = {'Scan':'sql.Scan', 'Join':'sql.Join', 'Aggregate':'sql.Aggregate', 'Mix':'sql.Mix'}
+classdicts = {'Scan':'sql.standard.Scan', 'Join':'sql.standard.Join', 'Aggregate':'sql.standard.Aggregate', 'Mix':'sql.standard.Mix'}
 jardicts = {'Scan':'ScanSQL', 'Join':'JoinSQL', 'Aggregate':'AggregateSQL', 'Mix':'MixSQL'}
 params = {}
 dirpath = os.getcwd()
@@ -34,11 +34,8 @@ def runspark(appname, taskname, f1, f2):
               "--master yarn "
               "--deploy-mode cluster "
               "--queue default "
-              "--driver-memory 5g "
-              "--executor-memory 4g "
-              "--executor-cores 2  "
               "--class %s %s/%s.jar %s %s %s"
-              %(classname,dirpath,testname, dfs_path, f1, f2))
+              %(classname,dirpath,"SparkFaultBench", dfs_path, f1, f2))
 
     print ("finish %s\n" % appname)
 

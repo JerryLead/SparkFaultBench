@@ -3,7 +3,7 @@ from randomUtils import RandomUtils
 import math
 
 #
-GenType = "NORMAL"
+GenType = "normal"
 
 #words
 maxurllen = 100
@@ -18,8 +18,11 @@ f1 = "rankings.txt"
 f2 = "uservisits.txt"
 
 #table
-rankings_col = 10
-userVisits_col = 100
+rankings_dict = {"1":"1000","2":"10000","5":"10000","10":"10000"}
+userVisits_dict = {"1":"8000000","2":"15000000","5":"32000000","10":"70000000"}
+rankings_col = 1000
+userVisits_col = 5000000
+scale = 1
 
 #gen
 urldict = {}
@@ -57,10 +60,13 @@ def getConfigPar():
     configs = mod_config.getConfigBySection('base','paramenter_conf')
     for item in configs:
         params[item[0]] = item[1]
+    print (params)
+    global scale
+    scale = params['scale']
     global rankings_col
-    rankings_col = int(params['rankings_col'])
+    rankings_col = int(rankings_dict[scale])
     global userVisits_col
-    userVisits_col = int(params['uservisits_col'])
+    userVisits_col = int(userVisits_dict[scale])
 
 
 def genUrls():
@@ -151,11 +157,11 @@ def load_zipf():
 
 
 def getDestinationUrl():
-    if GenType == 'NORMAL':
+    if GenType == 'normal':
         return urls[RandomUtils.randomInt(0,len(urls)-1)]
     else:
         ra = RandomUtils.randomBase()
-        if ra < 0.9:
+        if ra < 0.7:
             return urls[0]
         else:
             return urls[RandomUtils.randomInt(0,len(urls)-1)]
@@ -199,12 +205,8 @@ def genUservisitsFile(outputfile):
 def genOutputName():
     print ("generate urls successfully")
     global f1,f2
-    if (GenType == 'NORMAL'):
-        f1 = "rankings.txt"
-        f2 = "uservisits.txt"
-    else:
-        f1 = "rankings_skewed.txt"
-        f2 = "uservisits_skewed.txt"
+    f1 = "rankings"+"_"+GenType+"_"+scale+"G.txt"
+    f2 = "uservisits"+"_"+GenType+"_"+scale+"G.txt"
 
 
 def run():
@@ -215,16 +217,17 @@ def run():
     genUrls()
     # generate NORMAL data
     genOutputName()
+    print ("start normal data")
     genRankingsFile(f1)
-    print ("generate rankings table successfully")
     genUservisitsFile(f2)
 
     # generate SKEWED data
+
     global GenType
-    GenType= "SKEWED"
+    GenType= "skewed"
     genOutputName()
+    print ("start skewed data")
     genRankingsFile(f1)
     genUservisitsFile(f2)
-    print ("generate uservisits table successfully")
 
 run()
