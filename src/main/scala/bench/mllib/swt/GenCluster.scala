@@ -38,7 +38,7 @@ object GenCluster {
       distrib match {
         case "random" =>
           val pairs = {
-            val seqNormal: Seq[RDD[(Int, Double)]] = null
+            val seqNormal: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.normalRDD(sc, instances, partions).map(x => {
@@ -54,7 +54,7 @@ object GenCluster {
 
         case "gamma" =>
           val pairs = {
-            val seqGamma: Seq[RDD[(Int, Double)]] = null
+            val seqGamma: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.gammaRDD(sc, 9, 0.5, instances, partions).map(x => {
@@ -70,7 +70,7 @@ object GenCluster {
 
         case "poisson" =>
           val pairs = {
-            val seqPoisson: Seq[RDD[(Int, Double)]] = null
+            val seqPoisson: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.poissonRDD(sc, 1, instances, partions).map(x => {
@@ -86,7 +86,7 @@ object GenCluster {
 
         case "exponential" =>
           val pairs = {
-            val seqExponential: Seq[RDD[(Int, Double)]] = null
+            val seqExponential: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.exponentialRDD(sc, 1, instances, partions).map(x => {
@@ -102,7 +102,7 @@ object GenCluster {
 
         case "uniform" =>
           val pairs = {
-            val seqUniform: Seq[RDD[(Int, Double)]] = null
+            val seqUniform: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.uniformRDD(sc, instances, partions).map(x => {

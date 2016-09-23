@@ -32,9 +32,9 @@ object GenClassify {
     val distrib = if (args.length > 2) args(2).toString else "normal"
     val partions = if (args.length > 3) args(3).toInt else 1
 
-//    val path = if (args.length > 4) args(4) else "data/swt/Classify" + distrib + time.getTime()
+    val path = if (args.length > 4) args(4) else "data/swt/Classify" + distrib + time.getTime()
 
-        val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/Classify"+ distrib + time.getTime()
+//        val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/Classify"+ distrib + time.getTime()
 
 
 
