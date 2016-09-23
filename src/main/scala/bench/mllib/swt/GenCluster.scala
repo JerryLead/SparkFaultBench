@@ -28,9 +28,9 @@ object GenCluster {
     val distrib = if (args.length > 2) args(2).toString else "uniform"
     val partions = if (args.length > 3) args(3).toInt else 1
 
-//    val path = if (args.length > 4) args(4) else "data/swt/cluster" + distrib + time.getTime()
+    val path = if (args.length > 4) args(4) else "data/swt/cluster" + distrib + time.getTime()
 
-    val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/cluster"+ distrib + time.getTime()
+//    val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/cluster"+ distrib + time.getTime()
 
 
     var  i = 0
@@ -118,7 +118,7 @@ object GenCluster {
           pairs.saveAsTextFile(path)
 
 
-        case "normal" =>
+        case  _ =>
           val pairs = RandomRDDs.uniformVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
