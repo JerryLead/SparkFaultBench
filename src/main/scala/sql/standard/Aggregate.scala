@@ -6,12 +6,26 @@ import BaseUtils._
   * Created by lenovo on 2016/8/24 0024.
   */
 object Aggregate {
+  val rankingsName = "rankings"
+  val uservisitsName = "uservisits"
   def main(args: Array[String]): Unit = {
     val dfs_path = args(0)
-    val file1 = args(1)
-    val file2 = args(2)
-    val spark = getSparkSession("Aggregate")
-    doAggregateSQL(spark,dfs_path,file1,file2)
+    val scale = args(1)
+    val testType = args(2)
+
+    if (testType != "skewed"){
+      val file1 = genFileFullName(rankingsName,scale,"normal")
+      val file2 = genFileFullName(uservisitsName,scale,"normal")
+      val spark = getSparkSession("Join")
+      doAggregateSQL(spark,dfs_path,file1,file2)
+    }
+    if (testType != "normal"){
+      val file1 = genFileFullName(rankingsName,scale,"skewed")
+      val file2 = genFileFullName(uservisitsName,scale,"skewed")
+      val spark = getSparkSession("SkewJoin")
+      doAggregateSQL(spark,dfs_path,file1,file2)
+    }
+
   }
 
   def doAggregateSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String): Unit={

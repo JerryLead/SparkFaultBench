@@ -19,6 +19,12 @@ object BaseUtils {
                         avgTimeOnSite:Long
                        )
 
+  def genFileFullName(name: String,scale:String,testType:String):String={
+      val file1 = name+"_"+testType+"_"+scale+"G.txt"
+      return file1
+  }
+
+
   def getSparkSession(appName:String):SparkSession={
     val warehouseLocation = System.getProperty("user.dir")
     val spark = SparkSession.builder()

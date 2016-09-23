@@ -6,12 +6,26 @@ import BaseUtils._
   * Created by lenovo on 2016/8/24 0024.
   */
 object Mix {
+  val rankingsName = "rankings"
+  val uservisitsName = "uservisits"
   def main(args: Array[String]): Unit = {
     val dfs_path = args(0)
-    val file1 = args(1)
-    val file2 = args(2)
-    val spark = getSparkSession("Mix")
-    doMixSQL(spark,dfs_path,file1,file2)
+    val scale = args(1)
+    val testType = args(2)
+
+    if (testType != "skewed"){
+      val file1 = genFileFullName(rankingsName,scale,"normal")
+      val file2 = genFileFullName(uservisitsName,scale,"normal")
+      val spark = getSparkSession("Join")
+      doMixSQL(spark,dfs_path,file1,file2)
+    }
+    if (testType != "normal"){
+      val file1 = genFileFullName(rankingsName,scale,"skewed")
+      val file2 = genFileFullName(uservisitsName,scale,"skewed")
+      val spark = getSparkSession("SkewJoin")
+      doMixSQL(spark,dfs_path,file1,file2)
+    }
+
   }
   def doMixSQL(spark:SparkSession, dfs_path:String, file1:String, file2:String) :Unit={
     val rankingsDF = getRankingsDF(spark,file1,dfs_path)
@@ -25,7 +39,7 @@ object Mix {
       "FROM (SELECT destinationURL," +
                       "AVG(pageRank) as avgPageRank," +
                       "SUM(adRevenue) as totalRevenue " +
-              "FROM Rankings AS R, Uservisits AS UV " +
+              "FROM Uservisits AS UV, Rankings AS R " +
               "WHERE R.url = UV.destinationURL " +
                   "AND UV.avgTimeOnSite BETWEEN 8 AND 95 " +
               "GROUP BY UV.destinationURL) " +
