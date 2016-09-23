@@ -13,6 +13,7 @@ package bench.mllib.swt
 //import java.util.Random
 
 import org.apache.spark.mllib.random.RandomRDDs
+import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 object GenCluster {
@@ -33,93 +34,84 @@ object GenCluster {
 
 
     var  i = 0
+//    var seqPair = new Seq[RDD[String]](1)
       distrib match {
         case "random" =>
           val pairs = {
-            var pair = RandomRDDs.normalRDD(sc, instances, partions).map(x => {
-              i += 1
-              (i, x)
-            })
-            for (attr <- 1 until attributes) {
+            val seqNormal: Seq[RDD[(Int, Double)]] = null
+            for (attr <- 0 until attributes) {
               var ins = 0
-              pair = RandomRDDs.normalRDD(sc, instances, partions).map(x => {
+              val pair = RandomRDDs.normalRDD(sc, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
-              }).union(pair)
+              })
+              seqNormal :+ pair
             }
-            pair.groupByKey(partions).values
+            sc.union(seqNormal).groupByKey(partions).values
           }.cache()
 //          val pairs = RandomRDDs.normalVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "gamma" =>
           val pairs = {
-            var pair = RandomRDDs.gammaRDD(sc, 9, 0.5, instances, partions).map(x => {
-              i += 1
-              (i, x)
-            })
-            for (attr <- 1 until attributes) {
+            val seqGamma: Seq[RDD[(Int, Double)]] = null
+            for (attr <- 0 until attributes) {
               var ins = 0
-              pair = RandomRDDs.gammaRDD(sc, 9, 0.5, instances, partions).map(x => {
+              val pair = RandomRDDs.gammaRDD(sc, 9, 0.5, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
-              }).union(pair)
+              })
+              seqGamma :+ pair
             }
-            pair.groupByKey(partions).values
+            sc.union(seqGamma).groupByKey(partions).values
           }.cache()
 //          val pairs = RandomRDDs.gammaVectorRDD(sc, 9, 0.5, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "poisson" =>
           val pairs = {
-            var pair = RandomRDDs.poissonRDD(sc, 1, instances, partions).map(x => {
-              i += 1
-              (i, x)
-            })
-            for (attr <- 1 until attributes) {
+            val seqPoisson: Seq[RDD[(Int, Double)]] = null
+            for (attr <- 0 until attributes) {
               var ins = 0
-              pair = RandomRDDs.poissonRDD(sc, 1, instances, partions).map(x => {
+              val pair = RandomRDDs.poissonRDD(sc, 1, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
-              }).union(pair)
+              })
+              seqPoisson :+ pair
             }
-            pair.groupByKey(partions).values
+            sc.union(seqPoisson).groupByKey(partions).values
           }.cache()
 //          val pairs = RandomRDDs.poissonVectorRDD(sc, 1, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "exponential" =>
           val pairs = {
-            var pair = RandomRDDs.exponentialRDD(sc, 1, instances, partions).map(x => {
-              i += 1
-              (i, x)
-            })
-            for (attr <- 1 until attributes) {
+            val seqExponential: Seq[RDD[(Int, Double)]] = null
+            for (attr <- 0 until attributes) {
               var ins = 0
-              pair = RandomRDDs.exponentialRDD(sc, 1, instances, partions).map(x => {
+              val pair = RandomRDDs.exponentialRDD(sc, 1, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
-              }).union(pair)
+              })
+              seqExponential :+ pair
             }
-            pair.groupByKey(partions).values
+            sc.union(seqExponential).groupByKey(partions).values
           }.cache()
 //          val pairs = RandomRDDs.exponentialVectorRDD(sc, 1, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "uniform" =>
           val pairs = {
-            var pair = RandomRDDs.uniformRDD(sc, instances, partions).map(x => {
-              i += 1
-              (i, x)
-            })
-            for (attr <- 1 until attributes) {
+            val seqUniform: Seq[RDD[(Int, Double)]] = null
+            for (attr <- 0 until attributes) {
               var ins = 0
-              pair = RandomRDDs.uniformRDD(sc, instances, partions).map(x => {
+              val pair = RandomRDDs.uniformRDD(sc, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
-              }).union(pair)
+              })
+              seqUniform :+ pair
             }
-            pair.groupByKey(partions).values
+            sc.union(seqUniform).groupByKey(partions).values
           }.cache()
 //          val pairs = RandomRDDs.uniformVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
