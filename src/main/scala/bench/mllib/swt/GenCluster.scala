@@ -33,7 +33,7 @@ object GenCluster {
 //    val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/cluster"+ distrib + time.getTime()
 
 
-    var  i = 0
+//    var  i = 0
 //    var seqPair = new Seq[RDD[String]](1)
       distrib match {
         case "random" =>
@@ -102,7 +102,6 @@ object GenCluster {
 
         case "uniform" =>
           val pairs = {
-            var i = 0
             var seqUniform: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
@@ -115,6 +114,45 @@ object GenCluster {
             sc.union(seqUniform).groupByKey(partions).values
           }.cache()
 //          val pairs = RandomRDDs.uniformVectorRDD(sc, instances, attributes, partions)
+          pairs.saveAsTextFile(path)
+
+        case "mix" =>
+          val pairs = {
+            var seqUniform: Seq[RDD[(Int, Double)]] = Seq()
+            for (attr <- 0 until attributes/4 ){
+              var ins1 = 0
+              val pair1 = RandomRDDs.uniformRDD(sc, instances, partions).map(x => {
+                ins1 += 1
+                (ins1, x)
+              })
+              var ins2 = 0
+              val pair2 = RandomRDDs.poissonRDD(sc, 1, instances, partions).map(x => {
+                ins2 += 1
+                (ins2, x)
+              })
+              var ins3 = 0
+              val pair3 = RandomRDDs.gammaRDD(sc, 9, 0.5, instances, partions).map(x => {
+                ins3 += 1
+                (ins3, x)
+              })
+              var ins4 = 0
+              val pair4 = RandomRDDs.exponentialRDD(sc, 1, instances, partions).map(x => {
+                ins4 += 1
+                (ins4, x)
+              })
+              seqUniform = seqUniform:+pair1:+pair2:+pair3:+pair4
+            }
+            for (i <- 0 until attributes % 4 ){
+              var ins = 0
+              val pair = RandomRDDs.normalRDD(sc, instances, partions).map(x => {
+                ins += 1
+                (ins, x)
+              })
+              seqUniform = seqUniform:+pair
+            }
+            sc.union(seqUniform).groupByKey(partions).values
+          }.cache()
+          //          val pairs = RandomRDDs.uniformVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
 
