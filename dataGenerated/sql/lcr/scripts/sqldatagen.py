@@ -1,6 +1,7 @@
 import mod_config
 from randomUtils import RandomUtils
 import math
+import sys
 
 #
 GenType = "normal"
@@ -18,10 +19,10 @@ f1 = "rankings.txt"
 f2 = "uservisits.txt"
 
 #table
-rankings_dict = {"1":"1000","2":"10000","5":"10000","10":"10000"}
-userVisits_dict = {"1":"8000000","2":"15000000","5":"32000000","10":"70000000"}
+rankings_dict = {1:"1000",2:"10000",5:"10000",10:"10000"}
+uservisits_dict = {1:"8000000",2:"15000000",5:"32000000",10:"70000000"}
 rankings_col = 1000
-userVisits_col = 5000000
+uservisits_col = 5000000
 scale = 1
 
 #gen
@@ -54,19 +55,6 @@ uservisits (
     duration INT
 )
 '''
-
-
-def getConfigPar():
-    configs = mod_config.getConfigBySection('base','paramenter_conf')
-    for item in configs:
-        params[item[0]] = item[1]
-    print (params)
-    global scale
-    scale = params['scale']
-    global rankings_col
-    rankings_col = int(rankings_dict[scale])
-    global userVisits_col
-    userVisits_col = int(userVisits_dict[scale])
 
 
 def genUrls():
@@ -183,7 +171,7 @@ def genUservisitsFile(outputfile):
     agents = loadfile('user_agents.dat')
     codes = loadfile('country_codes_plus_languages.dat')
     keywords = loadfile('keywords.dat')
-    for i in range(userVisits_col):
+    for i in range(uservisits_col):
         if (i % 100000 == 0):
             print (i)
         sourceIP = genIP()
@@ -205,13 +193,21 @@ def genUservisitsFile(outputfile):
 def genOutputName():
     print ("generate urls successfully")
     global f1,f2
-    f1 = "rankings"+"_"+GenType+"_"+scale+"G.txt"
-    f2 = "uservisits"+"_"+GenType+"_"+scale+"G.txt"
+    f1 = "rankings"+"_"+GenType+"_"+str(scale)+"G.txt"
+    f2 = "uservisits"+"_"+GenType+"_"+str(scale)+"G.txt"
 
 
 def run():
-    getConfigPar()
-    print ("get config paramters successfully")
+    global scale
+    global zipf_param
+    global rankings_col 
+    global uservisits_col
+    scale = int(sys.argv[1])
+    zipf_param = float(sys.argv[2])
+    rankings_col = int(rankings_dict[scale])
+    uservisits_col = int(uservisits_dict[scale])
+
+
     load_zipf()
     print ("load_zipf successfully")
     genUrls()
