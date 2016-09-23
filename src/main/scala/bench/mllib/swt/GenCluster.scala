@@ -25,12 +25,12 @@ object GenCluster {
     val time = new java.util.Date
     val attributes = if (args.length > 0) args(0).toInt else 3
     val instances = if (args.length > 1) args(1).toInt else 100
-    val distrib = if (args.length > 2) args(2).toString else "normal"
+    val distrib = if (args.length > 2) args(2).toString else "uniform"
     val partions = if (args.length > 3) args(3).toInt else 1
 
-    val path = if (args.length > 4) args(4) else "data/swt/cluster" + distrib + time.getTime()
+//    val path = if (args.length > 4) args(4) else "data/swt/cluster" + distrib + time.getTime()
 
-//    val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/cluster"+ distrib + time.getTime()
+    val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/cluster"+ distrib + time.getTime()
 
 
     var  i = 0
@@ -38,14 +38,14 @@ object GenCluster {
       distrib match {
         case "random" =>
           val pairs = {
-            val seqNormal: Seq[RDD[(Int, Double)]] = Seq()
+            var seqNormal: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.normalRDD(sc, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
               })
-              seqNormal :+ pair
+              seqNormal = seqNormal :+ pair
             }
             sc.union(seqNormal).groupByKey(partions).values
           }.cache()
@@ -54,14 +54,14 @@ object GenCluster {
 
         case "gamma" =>
           val pairs = {
-            val seqGamma: Seq[RDD[(Int, Double)]] = Seq()
+            var seqGamma: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.gammaRDD(sc, 9, 0.5, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
               })
-              seqGamma :+ pair
+              seqGamma = seqGamma :+ pair
             }
             sc.union(seqGamma).groupByKey(partions).values
           }.cache()
@@ -70,14 +70,14 @@ object GenCluster {
 
         case "poisson" =>
           val pairs = {
-            val seqPoisson: Seq[RDD[(Int, Double)]] = Seq()
+            var seqPoisson: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.poissonRDD(sc, 1, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
               })
-              seqPoisson :+ pair
+              seqPoisson = seqPoisson :+ pair
             }
             sc.union(seqPoisson).groupByKey(partions).values
           }.cache()
@@ -86,14 +86,14 @@ object GenCluster {
 
         case "exponential" =>
           val pairs = {
-            val seqExponential: Seq[RDD[(Int, Double)]] = Seq()
+            var seqExponential: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.exponentialRDD(sc, 1, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
               })
-              seqExponential :+ pair
+              seqExponential = seqExponential :+ pair
             }
             sc.union(seqExponential).groupByKey(partions).values
           }.cache()
@@ -102,14 +102,15 @@ object GenCluster {
 
         case "uniform" =>
           val pairs = {
-            val seqUniform: Seq[RDD[(Int, Double)]] = Seq()
+            var i = 0
+            var seqUniform: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
               var ins = 0
               val pair = RandomRDDs.uniformRDD(sc, instances, partions).map(x => {
                 ins += 1
                 (ins, x)
               })
-              seqUniform :+ pair
+              seqUniform = seqUniform:+pair
             }
             sc.union(seqUniform).groupByKey(partions).values
           }.cache()
