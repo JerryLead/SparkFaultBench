@@ -20,8 +20,11 @@ object DecisionTreeClassification {
     val conf = new SparkConf().setAppName("DecisionTreeRegression")
     val sc = new SparkContext(conf)
 
+    val path = args(0)
+    val maxDepth = if (args.length > 1) args(1).toInt else 5
+    val maxBins = if (args.length > 2) args(2).toInt else 32
     // Load and parse the data file.
-    val data = MLUtils.loadLibSVMFile(sc, args(0))
+    val data = MLUtils.loadLibSVMFile(sc, path)
     // Split the data into training and test sets (30% held out for testing)
     val splits = data.randomSplit(Array(0.7, 0.3))
     val (trainingData, testData) = (splits(0), splits(1))
@@ -30,8 +33,6 @@ object DecisionTreeClassification {
     //  Empty categoricalFeaturesInfo indicates all features are continuous.
     val categoricalFeaturesInfo = Map[Int, Int]()
     val impurity = "variance"
-    val maxDepth = args(1).toInt
-    val maxBins = args(2).toInt
 
     val model = DecisionTree.trainRegressor(trainingData, categoricalFeaturesInfo, impurity,
       maxDepth, maxBins)

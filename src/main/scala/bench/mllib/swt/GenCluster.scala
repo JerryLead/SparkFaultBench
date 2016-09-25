@@ -10,8 +10,8 @@ package bench.mllib.swt
   *             [path]       path of data to write
   */
 
-//import java.util.Random
 
+import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.random.RandomRDDs
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -23,20 +23,18 @@ object GenCluster {
     val sc = new SparkContext(conf)
 
     val time = new java.util.Date
+
     val attributes = if (args.length > 0) args(0).toInt else 3
     val instances = if (args.length > 1) args(1).toInt else 100
     val distrib = if (args.length > 2) args(2).toString else "uniform"
     val partions = if (args.length > 3) args(3).toInt else 1
-
     val path = if (args.length > 4) args(4) else "data/swt/cluster" + distrib + time.getTime()
 
 //    val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/cluster"+ distrib + time.getTime()
 
 
-//    var  i = 0
-//    var seqPair = new Seq[RDD[String]](1)
       distrib match {
-        case "random" =>
+        case "normal" =>
           val pairs = {
             var seqNormal: Seq[RDD[(Int, Double)]] = Seq()
             for (attr <- 0 until attributes) {
@@ -47,9 +45,8 @@ object GenCluster {
               })
               seqNormal = seqNormal :+ pair
             }
-            sc.union(seqNormal).groupByKey(partions).values
+            sc.union(seqNormal).groupByKey(partions).values.map(x => Vectors.dense(x.toArray))
           }.cache()
-//          val pairs = RandomRDDs.normalVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "gamma" =>
@@ -63,9 +60,8 @@ object GenCluster {
               })
               seqGamma = seqGamma :+ pair
             }
-            sc.union(seqGamma).groupByKey(partions).values
+            sc.union(seqGamma).groupByKey(partions).values.map(x => Vectors.dense(x.toArray))
           }.cache()
-//          val pairs = RandomRDDs.gammaVectorRDD(sc, 9, 0.5, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "poisson" =>
@@ -79,9 +75,8 @@ object GenCluster {
               })
               seqPoisson = seqPoisson :+ pair
             }
-            sc.union(seqPoisson).groupByKey(partions).values
+            sc.union(seqPoisson).groupByKey(partions).values.map(x => Vectors.dense(x.toArray))
           }.cache()
-//          val pairs = RandomRDDs.poissonVectorRDD(sc, 1, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "exponential" =>
@@ -95,9 +90,8 @@ object GenCluster {
               })
               seqExponential = seqExponential :+ pair
             }
-            sc.union(seqExponential).groupByKey(partions).values
+            sc.union(seqExponential).groupByKey(partions).values.map(x => Vectors.dense(x.toArray))
           }.cache()
-//          val pairs = RandomRDDs.exponentialVectorRDD(sc, 1, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "uniform" =>
@@ -111,9 +105,8 @@ object GenCluster {
               })
               seqUniform = seqUniform:+pair
             }
-            sc.union(seqUniform).groupByKey(partions).values
+            sc.union(seqUniform).groupByKey(partions).values.map(x => Vectors.dense(x.toArray))
           }.cache()
-//          val pairs = RandomRDDs.uniformVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
         case "mix" =>
@@ -150,9 +143,8 @@ object GenCluster {
               })
               seqUniform = seqUniform:+pair
             }
-            sc.union(seqUniform).groupByKey(partions).values
+            sc.union(seqUniform).groupByKey(partions).values.map(x => Vectors.dense(x.toArray))
           }.cache()
-          //          val pairs = RandomRDDs.uniformVectorRDD(sc, instances, attributes, partions)
           pairs.saveAsTextFile(path)
 
 

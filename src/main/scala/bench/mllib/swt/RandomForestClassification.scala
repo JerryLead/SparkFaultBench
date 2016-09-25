@@ -20,18 +20,20 @@ object RandomForestClassification {
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("RandomForestClassification")
     val sc = new SparkContext(conf)
-    val data = MLUtils.loadLibSVMFile(sc, args(0))
+
+    val path = args(0)
+    val numClasses = if (args.length > 1) args(1).toInt else 2
+    val numTrees = if (args.length > 2) args(2).toInt else 2
+    val maxDepth = if (args.length > 3) args(3).toInt else 5
+    val maxBins = if (args.length > 4) args(4).toInt else 32
+
+    val data = MLUtils.loadLibSVMFile(sc, path)
     val splits = data.randomSplit(Array(0.7, 0.3))
     val (trainingData, testData) = (splits(0), splits(1))
 
     val categoricalFeaturesInfo = Map[Int, Int]()
     val featureSubsetStrategy = "auto" // Let the algorithm choose.
     val impurity = "gini"
-    val numClasses = args(1).toInt  //2
-    val numTrees = args(2).toInt    //2
-    val maxDepth = args(3).toInt    //5
-    val maxBins = args(4).toInt     //3
-
 
     val model = RandomForest.trainClassifier(trainingData, numClasses, categoricalFeaturesInfo,
       numTrees, featureSubsetStrategy, impurity, maxDepth, maxBins)

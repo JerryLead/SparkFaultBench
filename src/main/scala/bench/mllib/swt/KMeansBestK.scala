@@ -20,16 +20,15 @@ object KMeansBestK {
 
     val conf = new SparkConf()
       .setAppName("KMeansBestK")
-//      .setMaster("local[2]")
-//      .set("spark.sql.warehouse.dir", "file:///E:/Shen/spark-warehouse")
+
     val sc = new SparkContext(conf)
 
     val data = sc.textFile(args(0))
-    val parsedData = data.map(s => Vectors.dense(s.split(' ').map(_.toDouble))).cache()
+    val parsedData = data.map(s => Vectors.dense(s.replaceAll("\\[|\\]","").split(",").map(_.toDouble))).cache()
 
-    val itermin = args(1).toInt
-    val itermax = args(2).toInt
-    val initializedMode = args(3)
+    val itermin = if (args.length > 1) args(1).toInt else 10
+    val itermax = if (args.length > 2) args(2).toInt else 50
+    val initializedMode = if (args.length > 3) args(3) else "k-means||"
 
     val ks: List[Int] = List.range(itermin,itermax)
     ks.foreach(cluster => {
