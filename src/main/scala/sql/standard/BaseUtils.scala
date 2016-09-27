@@ -40,7 +40,9 @@ object BaseUtils {
     val rankingsDF = spark.sparkContext
       .textFile(HDFS_PATH + loadfile)
       .map(_.split(","))
-      .map(attributes=>Rankings(attributes(0).trim.toInt,attributes(1),attributes(2).trim.toInt))
+      .map(attributes=>Rankings(attributes(0).replace("(","").trim.toInt,
+                                attributes(1),
+                                attributes(2).replace(")","").trim.toInt))
       .toDF()
     return rankingsDF
     }
@@ -50,7 +52,7 @@ object BaseUtils {
     val uservisitsDF =spark.sparkContext
       .textFile(HDFS_PATH + loadfile)
       .map(_.split(","))
-      .map(attributes=>UserVisits(attributes(0),
+      .map(attributes=>UserVisits(attributes(0).replace("(",""),
         attributes(1),
         attributes(2).trim.toLong,
         attributes(3).trim.toDouble,
@@ -58,7 +60,7 @@ object BaseUtils {
         attributes(5),
         attributes(6),
         attributes(7),
-        attributes(8).trim.toLong)).toDF()
+        attributes(8).replace(")","").trim.toLong)).toDF()
     return uservisitsDF
   }
 }
