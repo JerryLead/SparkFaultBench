@@ -31,9 +31,9 @@ object GenClassify {
     val attributes = if (args.length > 0) args(0).toInt else 10
     val instances = if (args.length > 1) args(1).toInt else 100
     val distrib = if (args.length > 2) args(2).toString else "normal"
-    val partions = 1
+    val partions = if (args.length > 3) args(3).toInt else 4
 
-    val path = if (args.length > 3) args(3) else "data/swt/Classify" + distrib + time.getTime()
+    val path = if (args.length > 4) args(4) else "data/swt/Classify" + distrib + time.getTime()
 
 //        val path = "file:///E:/Shen/SparkFaultTolerant/DataSource/Classify"+ distrib + time.getTime()
     val ranGen = new Random()
@@ -43,10 +43,14 @@ object GenClassify {
           var seqNormal: Seq[RDD[(Int, (Int, Double))]] = Seq()
           for (attr <- 0 until attributes) {
             var ins = 0
-            val pair = RandomRDDs.normalRDD(sc, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins += 1
-              (ins, (attr , x))
-            })
+            val pair = RandomRDDs.normalRDD(sc, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins += 1
+                  (x * instances + ins, (attr, i))
+                }
+                )
+              })
             seqNormal = seqNormal :+ pair
           }
           sc.union(seqNormal).groupByKey(partions).values.map(x =>
@@ -60,10 +64,14 @@ object GenClassify {
           var seqGamma: Seq[RDD[(Int, (Int, Double))]] = Seq()
           for (attr <- 0 until attributes) {
             var ins = 0
-            val pair = RandomRDDs.gammaRDD(sc, 9, 0.5, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins += 1
-              (ins, (attr, x))
-            })
+            val pair = RandomRDDs.gammaRDD(sc, 9, 0.5, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins += 1
+                  (x * instances + ins, (attr, i))
+                }
+                )
+              })
             seqGamma = seqGamma :+ pair
           }
           sc.union(seqGamma).groupByKey(partions).values.map(x =>
@@ -77,9 +85,13 @@ object GenClassify {
           var seqPoi: Seq[RDD[(Int, (Int, Double))]] = Seq()
           for (attr <- 0 until attributes) {
             var ins = 0
-            val pair = RandomRDDs.poissonRDD(sc, 1, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins += 1
-              (ins, (attr , x))
+            val pair = RandomRDDs.poissonRDD(sc, 1, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+              iter.map(i => {
+                ins += 1
+                (x * instances + ins, (attr, i))
+              }
+              )
             })
             seqPoi = seqPoi :+ pair
           }
@@ -94,9 +106,13 @@ object GenClassify {
           var seqExp: Seq[RDD[(Int, (Int, Double))]] = Seq()
           for (attr <- 0 until attributes) {
             var ins = 0
-            val pair = RandomRDDs.exponentialRDD(sc, 1, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins += 1
-              (ins, (attr, x))
+            val pair = RandomRDDs.exponentialRDD(sc, 1, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+              iter.map(i => {
+                ins += 1
+                (x * instances + ins, (attr, i))
+              }
+              )
             })
             seqExp = seqExp :+ pair
           }
@@ -111,10 +127,14 @@ object GenClassify {
           var seqUniform: Seq[RDD[(Int, (Int, Double))]] = Seq()
           for (attr <- 0 until attributes) {
             var ins = 0
-            val pair = RandomRDDs.uniformRDD(sc, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins += 1
-              (ins, (attr, x))
-            })
+            val pair = RandomRDDs.uniformRDD(sc, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins += 1
+                  (x * instances + ins, (attr, i))
+                }
+                )
+              })
             seqUniform = seqUniform :+ pair
           }
           sc.union(seqUniform).groupByKey(partions).values.map(x =>
@@ -128,33 +148,53 @@ object GenClassify {
           var seqMix: Seq[RDD[(Int, (Int, Double))]] = Seq()
           for (attr <- 0 until attributes/4 ){
             var ins1 = 0
-            val pair1 = RandomRDDs.uniformRDD(sc, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins1 += 1
-              (ins1, (4* attr, x))
-            })
+            val pair1 = RandomRDDs.uniformRDD(sc, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins1 += 1
+                  (x * instances + ins1, (4*attr, i))
+                }
+                )
+              })
             var ins2 = 0
-            val pair2 = RandomRDDs.poissonRDD(sc, 1, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins2 += 1
-              (ins2, (4* attr + 1, x))
-            })
+            val pair2 = RandomRDDs.poissonRDD(sc, 1, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins2 += 1
+                  (x * instances + ins2, (4*attr+1, i))
+                }
+                )
+              })
             var ins3 = 0
-            val pair3 = RandomRDDs.gammaRDD(sc, 9, 0.5, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins3 += 1
-              (ins3, (4* attr + 2, x))
-            })
+            val pair3 = RandomRDDs.gammaRDD(sc, 9, 0.5, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins3 += 1
+                  (x * instances + ins3, (4*attr+2, i))
+                }
+                )
+              })
             var ins4 = 0
-            val pair4 = RandomRDDs.exponentialRDD(sc, 1, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins4 += 1
-              (ins4, (4* attr + 3, x))
-            })
+            val pair4 = RandomRDDs.exponentialRDD(sc, 1, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins4 += 1
+                  (x * instances + ins4, (4*attr+3, i))
+                }
+                )
+              })
             seqMix = seqMix:+pair1:+pair2:+pair3:+pair4
           }
-          for (i <- 0 until attributes % 4 ){
+          for (attr <- 0 until attributes % 4 ){
             var ins = 0
-            val pair = RandomRDDs.normalRDD(sc, ranGen.nextInt(instances)+1, partions).map(x => {
-              ins += 1
-              (ins, (attributes /4 *4 + i, x))
-            })
+            val pair = RandomRDDs.normalRDD(sc, ranGen.nextInt(instances)+1, partions)
+              .mapPartitionsWithIndex((x, iter) =>{
+                iter.map(i => {
+                  ins += 1
+                  (x * instances + ins, (attributes /4 *4 + attr, i))
+                }
+                )
+              })
             seqMix = seqMix:+pair
           }
           sc.union(seqMix).groupByKey(partions).values.map(x =>
