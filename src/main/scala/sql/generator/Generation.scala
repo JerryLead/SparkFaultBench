@@ -24,8 +24,8 @@ object Generation {
   val filevar = 1000
   var f1 = "rankings.txt"
   var f2 = "uservisits.txt"
-  val path = "hdfs:///user/hadoop/data/lcr/"
-  //val path = "dataGenerated/sql/lcr/scripts/"
+  //var path = "hdfs:///user/hadoop/data/lcr/"
+  var path = "dataGenerated/sql/lcr/scripts/"
   //table
 
   val rankings_dict = Map(1->10,2->10000,5->10000,10->10000)
@@ -53,6 +53,13 @@ object Generation {
       else scale = 1
     }
     if (args.length > 1) zipf_param_url = args(1).toFloat
+    if (args.length > 2){
+      val hdfs_head = args(2).toString
+      path = "hdfs://"+hdfs_head
+      if (path.charAt(path.length-1) != '/'){
+        path = path+'/'
+      }
+    }
     rankings_col = rankings_dict(scale)
     uservisits_col = uservisits_dict(scale)
     val conf = new SparkConf()

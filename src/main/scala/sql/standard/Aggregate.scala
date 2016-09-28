@@ -9,9 +9,12 @@ object Aggregate {
   val rankingsName = "rankings"
   val uservisitsName = "uservisits"
   def main(args: Array[String]): Unit = {
-    val dfs_path = args(0)
-    val scale = args(1)
-    val testType = args(2)
+    var dfs_path = "dataGenerated/sql/lcr/scripts/"
+    var scale = "1"
+    var testType = "both"
+    if (args.length>0) dfs_path = getHDFSPath(args(0))
+    if (args.length>1) scale = args(1)
+    if (args.length>2) testType = args(2)
 
     if (testType != "skewed"){
       val file1 = genFileFullName(rankingsName,scale,"normal")
