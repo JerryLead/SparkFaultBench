@@ -11,7 +11,7 @@ import scala.collection.mutable.{ArrayBuffer, HashMap}
 object Generation {
   //
   var GenType = "normal"
-
+  val partition = 8
   //words
   val maxurllen = 100
   val minurllen = 10
@@ -28,7 +28,7 @@ object Generation {
   var path = "dataGenerated/sql/lcr/scripts/"
   //table
 
-  val rankings_dict = Map(1->10,2->10000,5->10000,10->10000)
+  val rankings_dict = Map(1->1000,2->10000,5->10000,10->10000)
   val uservisits_dict = Map(1->8000000,2->15000000,5->32000000,10->70000000)
   var rankings_col = 1000
   var uservisits_col = 5000000
@@ -42,7 +42,7 @@ object Generation {
   var zipf_param_pagerank = 0.5
   var zipf_url = ArrayBuffer[Int]()
   var zipf_param_url = 2.0
-
+  var degree = "2.0"
 
   def main(args: Array[String]): Unit = {
     if (args.length > 0) {
@@ -52,7 +52,10 @@ object Generation {
       else if (scale >= 2) scale = 2
       else scale = 1
     }
-    if (args.length > 1) zipf_param_url = args(1).toFloat
+    if (args.length > 1) {
+      degree = args(1)
+      zipf_param_url = args(1).toFloat
+    }
     if (args.length > 2){
       val hdfs_head = args(2).toString
       path = "hdfs://"+hdfs_head
@@ -175,8 +178,8 @@ object Generation {
     }
   }
 
-  def getDestinationUrl(urls:ArrayBuffer[String],zipf:ArrayBuffer[Int]): String ={
-    if (GenType == "normal"){
+  def getDestinationUrl(urls:ArrayBuffer[String],zipf:ArrayBuffer[Int],gentype:String): String ={
+    if (gentype == "normal"){
       return urls(MyRandom.randomInt(0,urls.length-1))
     }
     else{
@@ -187,7 +190,7 @@ object Generation {
 
   def genRankingsFile(outputfile:String,sc:SparkContext): Unit ={
 
-    val rdd = sc.parallelize(0 to rankings_col-1, 8).map(
+    val rdd = sc.parallelize(0 to rankings_col-1, partition).map(
       x => {
         val pageurl = urls(x)
         var pagerank = 0
@@ -226,11 +229,12 @@ object Generation {
     val broadcast_keywords = sc.broadcast(DataFile.keywords)
     val broadurls = sc.broadcast(urls)
     val broadzipf = sc.broadcast(zipf_url)
-    val rdd = sc.parallelize(1 to uservisits_col, 8).map(
+    val broadtype = sc.broadcast(GenType)
+    val rdd = sc.parallelize(1 to uservisits_col, partition).map(
       x => {
         val sourceIP = genIP()
-        val destURL = getDestinationUrl(broadurls.value,broadzipf.value)
-        val visitDate = MyRandom.randomDate()
+        val destURL = getDestinationUrl(broadurls.value,broadzipf.value,broadtype.value)
+        val visitDate = MyRandom.randomDate().toString
         val adRevenue = MyRandom.randomFloat(1000.0f)
         val userAgent = broadcast_agents.value(MyRandom.randomInt(0,broadcast_agents.value.length-1)).replace(","," ").trim()
         val mycode = broadcast_codes.value(MyRandom.randomInt(0,broadcast_codes.value.length-1)).split(",")

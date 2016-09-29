@@ -12,10 +12,11 @@ object Aggregate {
     var dfs_path = "dataGenerated/sql/lcr/scripts/"
     var scale = "1"
     var testType = "both"
+    var degree = ""
     if (args.length>0) dfs_path = getHDFSPath(args(0))
     if (args.length>1) scale = args(1)
     if (args.length>2) testType = args(2)
-
+    if (args.length>3) degree = args(3)
     if (testType != "skewed"){
       val file1 = genFileFullName(rankingsName,scale,"normal")
       val file2 = genFileFullName(uservisitsName,scale,"normal")
