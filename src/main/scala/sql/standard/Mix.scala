@@ -20,13 +20,13 @@ object Mix {
     if (testType != "skewed"){
       val file1 = genFileFullName(rankingsName,scale,"normal")
       val file2 = genFileFullName(uservisitsName,scale,"normal")
-      val spark = getSparkSession("Join")
+      val spark = getSparkSession("Mix")
       doMixSQL(spark,dfs_path,file1,file2)
     }
     if (testType != "normal"){
       val file1 = genFileFullName(rankingsName,scale,"skewed")
       val file2 = genFileFullName(uservisitsName,scale,"skewed")
-      val spark = getSparkSession("SkewJoin")
+      val spark = getSparkSession("SkewMix")
       doMixSQL(spark,dfs_path,file1,file2)
     }
 
