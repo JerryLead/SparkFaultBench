@@ -1,9 +1,10 @@
 import mod_config
 from randomUtils import RandomUtils
 import math
+import sys
 
 #
-GenType = "NORMAL"
+GenType = "normal"
 
 #words
 maxurllen = 100
@@ -18,8 +19,11 @@ f1 = "rankings.txt"
 f2 = "uservisits.txt"
 
 #table
-rankings_col = 10
-userVisits_col = 100
+rankings_dict = {1:"1000",2:"10000",5:"10000",10:"10000"}
+uservisits_dict = {1:"8000000",2:"15000000",5:"32000000",10:"70000000"}
+rankings_col = 1000
+uservisits_col = 5000000
+scale = 1
 
 #gen
 urldict = {}
@@ -51,16 +55,6 @@ uservisits (
     duration INT
 )
 '''
-
-
-def getConfigPar():
-    configs = mod_config.getConfigBySection('base','paramenter_conf')
-    for item in configs:
-        params[item[0]] = item[1]
-    global rankings_col
-    rankings_col = int(params['rankings_col'])
-    global userVisits_col
-    userVisits_col = int(params['uservisits_col'])
 
 
 def genUrls():
@@ -151,11 +145,11 @@ def load_zipf():
 
 
 def getDestinationUrl():
-    if GenType == 'NORMAL':
+    if GenType == 'normal':
         return urls[RandomUtils.randomInt(0,len(urls)-1)]
     else:
         ra = RandomUtils.randomBase()
-        if ra < 0.9:
+        if ra < 0.7:
             return urls[0]
         else:
             return urls[RandomUtils.randomInt(0,len(urls)-1)]
@@ -177,7 +171,7 @@ def genUservisitsFile(outputfile):
     agents = loadfile('user_agents.dat')
     codes = loadfile('country_codes_plus_languages.dat')
     keywords = loadfile('keywords.dat')
-    for i in range(userVisits_col):
+    for i in range(uservisits_col):
         if (i % 100000 == 0):
             print (i)
         sourceIP = genIP()
@@ -199,32 +193,37 @@ def genUservisitsFile(outputfile):
 def genOutputName():
     print ("generate urls successfully")
     global f1,f2
-    if (GenType == 'NORMAL'):
-        f1 = "rankings.txt"
-        f2 = "uservisits.txt"
-    else:
-        f1 = "rankings_skewed.txt"
-        f2 = "uservisits_skewed.txt"
+    f1 = "rankings"+"_"+GenType+"_"+str(scale)+"G.txt"
+    f2 = "uservisits"+"_"+GenType+"_"+str(scale)+"G.txt"
 
 
 def run():
-    getConfigPar()
-    print ("get config paramters successfully")
+    global scale
+    global zipf_param
+    global rankings_col 
+    global uservisits_col
+    scale = int(sys.argv[1])
+    zipf_param = float(sys.argv[2])
+    rankings_col = int(rankings_dict[scale])
+    uservisits_col = int(uservisits_dict[scale])
+
+
     load_zipf()
     print ("load_zipf successfully")
     genUrls()
     # generate NORMAL data
     genOutputName()
+    print ("start normal data")
     genRankingsFile(f1)
-    print ("generate rankings table successfully")
     genUservisitsFile(f2)
 
     # generate SKEWED data
+
     global GenType
-    GenType= "SKEWED"
+    GenType= "skewed"
     genOutputName()
+    print ("start skewed data")
     genRankingsFile(f1)
     genUservisitsFile(f2)
-    print ("generate uservisits table successfully")
 
 run()

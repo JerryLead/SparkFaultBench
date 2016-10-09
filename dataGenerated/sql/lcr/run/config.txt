@@ -1,5 +1,20 @@
+#HDFS PATH
 HDFS_PATH = hdfs:///user/hadoop/data/lcr/
+
+#normal data file name in Rankings table
 RANKINGS_FILE = rankings.txt
+
+#skewed data file name in Rankings table
 RANKINGS_SKEWED_FILE = rankings_skewed.txt
+
+#normal data file name in Uservisits table
 USERVISITS_FILE = uservisits.txt
+
+#skewed data file name in Uservisits table
 USERVISITS_SKEWED_FILE = uservisits_skewed.txt
+
+#RunType: ALL, NORMAL, SKEWED
+#ALL: run normal and skewed data
+#NORMAL: run normal data
+#SKEWED: run skewed data
+RUN_TYPE = SKEWED
