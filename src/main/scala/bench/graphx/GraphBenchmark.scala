@@ -18,7 +18,7 @@ object GraphBenchmark {
     * /home/hadoop/zw/GraphBenchmark.jar -app=cc
     *
     * Options:
-    *   -app "pagerank" or "cc" for pagerank or connected components. (Default: pagerank)
+    *   -app "pagerank" , "cc" , "sssp" or "tc" for pagerank , connected components , sssp or triangleCount. (Default: pagerank)
     *   -niters the number of iterations of pagerank to use (Default: 10)
     *   -partStrategy the graph partitioning strategy to use
     *   -vifpath vertice input file path (Default: data/zw/vertice/part-*)

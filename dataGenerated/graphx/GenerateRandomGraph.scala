@@ -18,13 +18,13 @@ object GenerateRandomGraph {
     * /home/hadoop/zw/GenerateRandomGraph.jar -nverts=10000
     *
     * Options:
-    *   -nverts the number of vertices in the graph (Default: 1000000)
+    *   -nverts the number of vertices in the graph (Default: 10000)
     *   -numEPart the number of edge partitions in the graph (Default: number of cores)
     *   -partStrategy the graph partitioning strategy to use
     *   -mu the mean parameter for the log-normal graph (Default: 4.0)
     *   -sigma the stdev parameter for the log-normal graph (Default: 1.3)
     *   -seed seed to use for RNGs (Default: -1, picks seed randomly)
-    *   -vofpath vertice onput file path (Default: data/zw/vertice)
+    *   -vofpath vertice output file path (Default: data/zw/vertice)
     *   -eofpath edge onput file path (Default: data/zw/edge)
     */
 
@@ -74,7 +74,4 @@ object GenerateRandomGraph {
 
     sc.stop()
   }
-
-
-
 }
