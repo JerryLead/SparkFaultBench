@@ -11,20 +11,24 @@ object Scan {
   val rankingsName = "rankings"
   val uservisitsName = "uservisits"
   def main(args: Array[String]): Unit = {
-    val dfs_path = args(0)
-    val scale = args(1)
-    val testType = args(2)
-
+    var dfs_path = "dataGenerated/sql/lcr/scripts/"
+    var scale = "1"
+    var testType = "both"
+    var degree = "2.0"
+    if (args.length>0) dfs_path = getHDFSPath(args(0))
+    if (args.length>1) scale = args(1)
+    if (args.length>2) testType = args(2)
+    if (args.length>3) degree = args(3)
     if (testType != "skewed"){
       val file1 = genFileFullName(rankingsName,scale,"normal")
       val file2 = genFileFullName(uservisitsName,scale,"normal")
-      val spark = getSparkSession("Join")
+      val spark = getSparkSession("Scan")
       doScanSQL(spark,dfs_path,file1,file2)
     }
     if (testType != "normal"){
       val file1 = genFileFullName(rankingsName,scale,"skewed")
       val file2 = genFileFullName(uservisitsName,scale,"skewed")
-      val spark = getSparkSession("SkewJoin")
+      val spark = getSparkSession("SkewScan")
       doScanSQL(spark,dfs_path,file1,file2)
     }
 

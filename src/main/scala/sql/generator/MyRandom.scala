@@ -20,8 +20,8 @@ object MyRandom {
     }
     return name
   }
-  def randomDate(): Int ={
-    val sec = 1000000000 + (Random.nextFloat()*(System.currentTimeMillis()-1000000000)).toInt
+  def randomDate(): Long ={
+    val sec = 1000000000 + (Random.nextFloat()*(System.currentTimeMillis()-1000000000)).toLong
     return sec
   }
   def randomFloat(x:Float): Float ={

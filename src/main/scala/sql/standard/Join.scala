@@ -9,10 +9,14 @@ object Join {
   val rankingsName = "rankings"
   val uservisitsName = "uservisits"
   def main(args: Array[String]): Unit = {
-    val dfs_path = args(0)
-    val scale = args(1)
-    val testType = args(2)
-
+    var dfs_path = "dataGenerated/sql/lcr/scripts/"
+    var scale = "1"
+    var testType = "both"
+    var degree = ""
+    if (args.length>0) dfs_path = getHDFSPath(args(0))
+    if (args.length>1) scale = args(1)
+    if (args.length>2) testType = args(2)
+    if (args.length>3) degree = args(3)
     if (testType != "skewed"){
       val file1 = genFileFullName(rankingsName,scale,"normal")
       val file2 = genFileFullName(uservisitsName,scale,"normal")
@@ -35,8 +39,8 @@ object Join {
     rankingsDF.createOrReplaceTempView("rankings")
     uservisitsDF.createOrReplaceTempView("uservisits")
     val sqltext = "select pagerank,sourceipaddr,url,adrevenue " +
-      "from uservisits " +
-      "INNER JOIN rankings " +
+      "from rankings " +
+      "INNER JOIN uservisits " +
       "ON url=destinationURL " +
       "order by adrevenue desc limit 100"
     val joinDF = spark.sql(sqltext)

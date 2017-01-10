@@ -20,10 +20,18 @@ object BaseUtils {
                        )
 
   def genFileFullName(name: String,scale:String,testType:String):String={
-      val file1 = name+"_"+testType+"_"+scale+"G.txt"
+      val file1 = name+"_"+testType+"_"+scale+"G"
       return file1
   }
 
+  def getHDFSPath(s:String): String ={
+    var path = ""
+    path = "hdfs://"+s
+    if (path.charAt(path.length-1) != '/'){
+      path = path+'/'
+    }
+    return path
+  }
 
   def getSparkSession(appName:String):SparkSession={
     val warehouseLocation = System.getProperty("user.dir")
@@ -38,9 +46,11 @@ object BaseUtils {
   def getRankingsDF(spark:SparkSession,loadfile:String, path:String):DataFrame={
     import spark.implicits._
     val rankingsDF = spark.sparkContext
-      .textFile(HDFS_PATH + loadfile)
+      .textFile(path + loadfile)
       .map(_.split(","))
-      .map(attributes=>Rankings(attributes(0).trim.toInt,attributes(1),attributes(2).trim.toInt))
+      .map(attributes=>Rankings(attributes(0).replace("(","").trim.toInt,
+                                attributes(1),
+                                attributes(2).replace(")","").trim.toInt))
       .toDF()
     return rankingsDF
     }
@@ -48,9 +58,9 @@ object BaseUtils {
   def getUservisitsDF(spark:SparkSession,loadfile:String, path:String):DataFrame={
     import spark.implicits._
     val uservisitsDF =spark.sparkContext
-      .textFile(HDFS_PATH + loadfile)
+      .textFile(path + loadfile)
       .map(_.split(","))
-      .map(attributes=>UserVisits(attributes(0),
+      .map(attributes=>UserVisits(attributes(0).replace("(",""),
         attributes(1),
         attributes(2).trim.toLong,
         attributes(3).trim.toDouble,
@@ -58,7 +68,7 @@ object BaseUtils {
         attributes(5),
         attributes(6),
         attributes(7),
-        attributes(8).trim.toLong)).toDF()
+        attributes(8).replace(")","").trim.toLong)).toDF()
     return uservisitsDF
   }
 }
