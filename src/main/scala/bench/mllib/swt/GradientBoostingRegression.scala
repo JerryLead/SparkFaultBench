@@ -4,6 +4,7 @@ import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.tree.GradientBoostedTrees
 import org.apache.spark.mllib.tree.configuration.BoostingStrategy
+import org.apache.spark.mllib.tree.model.GradientBoostedTreesModel
 
 /**
   * Created by Shen on 2017/1/10.
@@ -29,8 +30,6 @@ object GradientBoostingRegression {
 
     val model = GradientBoostedTrees.train(trainingData, boostingStrategy)
 
-    println(model.toDebugString.substring(0,1000))
-
     // Evaluate model on test instances and compute test error
     val labelsAndPredictions = testData.map { point =>
       val prediction = model.predict(point.features)
@@ -38,7 +37,12 @@ object GradientBoostingRegression {
     }
     val testMSE = labelsAndPredictions.map{ case(v, p) => math.pow((v - p), 2)}.mean()
     println("Test Mean Squared Error = " + testMSE)
-    println("Learned regression GBT model:\n" + model.toDebugString)
+    println("Learned regression GBT model:\n" + model.toDebugString.substring(0,1000))
+
+    model.save(sc, "target/tmp/myGradientBoostingRegressionModel")
+    val time = new java.util.Date
+    val sameModel = GradientBoostedTreesModel.load(sc,
+      "target/tmp/myGBDTModel" + time.getTime())
 
     sc.stop()
   }
